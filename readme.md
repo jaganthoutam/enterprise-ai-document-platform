@@ -61,7 +61,7 @@ This repository includes comprehensive visualizations of the application interfa
 
 ### 1. User Dashboard (Web Interface)
 
-![User Dashboard Web Interface](/docs/images/user-dashboard.png)
+![ Dashboard Web Interface](screens/dashboard-svg.svg)
 
 The web dashboard presents a branded interface for ACME Corporation featuring:
 
@@ -93,7 +93,7 @@ The web dashboard presents a branded interface for ACME Corporation featuring:
 
 ### 2. Document Viewer with AI Analysis
 
-![Document Viewer with AI Analysis](/docs/images/document-viewer.png)
+![Document Viewer with AI Analysis](screens/document-viewer-svg.svg)
 
 The document viewer integrates intelligent analysis capabilities:
 
@@ -126,7 +126,7 @@ The document viewer integrates intelligent analysis capabilities:
 
 ### 3. AI Assistant Chat Interface
 
-![AI Assistant Chat Interface](/docs/images/ai-assistant.png)
+![AI Assistant Chat Interface](screens/ai-assistant-svg.svg)
 
 The AI assistant provides contextual document support:
 
@@ -161,7 +161,7 @@ The AI assistant provides contextual document support:
 
 ### 4. Mobile Application Interface
 
-![Mobile Application Interface](/docs/images/mobile-interface.png)
+![Mobile Application Interface](screens/mobile-app-svg.svg)
 
 The mobile experience optimizes for on-the-go access:
 
@@ -191,7 +191,7 @@ The mobile experience optimizes for on-the-go access:
 
 ### 5. Admin Dashboard (Multi-Tenant View)
 
-![Admin Dashboard Multi-Tenant View](/docs/images/admin-dashboard.png)
+![Admin Dashboard Multi-Tenant View](screens/admin-dashboard-svg.svg)
 
 The admin interface provides system-wide management:
 
