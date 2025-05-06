@@ -1,0 +1,572 @@
+[
+  {
+    "PK": "TENANT#tenant_01",
+    "SK": "CONFIG",
+    "tenantId": "tenant_01",
+    "branding": {
+      "primaryColor": "#0052CC",
+      "secondaryColor": "#FF5630",
+      "accentColor": "#36B37E",
+      "logoUrl": "https://storage.example.com/logos/acme-logo.png",
+      "favicon": "https://storage.example.com/logos/acme-favicon.ico",
+      "fontFamily": "Roboto, sans-serif",
+      "customCss": ".header { border-bottom: 2px solid #0052CC; }",
+      "emailTemplate": "template_enterprise_01"
+    },
+    "security": {
+      "passwordPolicy": {
+        "minLength": 12,
+        "requireUppercase": true,
+        "requireLowercase": true,
+        "requireNumbers": true,
+        "requireSymbols": true,
+        "preventReuse": 10,
+        "expiryDays": 90
+      },
+      "mfaSettings": {
+        "required": true,
+        "methods": ["app", "sms", "email"],
+        "graceLoginCount": 0,
+        "rememberDeviceDays": 30
+      },
+      "sessionSettings": {
+        "idleTimeoutMinutes": 120,
+        "maxSessionDays": 1,
+        "simultaneousLogins": true,
+        "deviceRestrictions": []
+      },
+      "ipRestrictions": [
+        {
+          "name": "Office Network",
+          "cidr": "192.168.1.0/24",
+          "description": "Main office IP range"
+        },
+        {
+          "name": "VPN Network",
+          "cidr": "10.0.0.0/16",
+          "description": "Corporate VPN IP range"
+        }
+      ],
+      "auditSettings": {
+        "detailedLogin": true,
+        "documentAccess": true,
+        "adminActions": true,
+        "retentionDays": 365
+      }
+    },
+    "integrations": {
+      "sso": {
+        "enabled": true,
+        "provider": "okta",
+        "entityId": "https://sso.acmecorp.com/saml2/service-provider",
+        "metadataUrl": "https://acmecorp.okta.com/app/exk6f9240lSxUcOeC4x7/sso/saml/metadata",
+        "assertionConsumerService": "https://api.example.com/auth/saml/acmecorp",
+        "nameIdFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+      },
+      "email": {
+        "provider": "custom",
+        "smtpServer": "smtp.acmecorp.com",
+        "smtpPort": 587,
+        "smtpUsername": "notifications@acmecorp.com",
+        "smtpPasswordSecretId": "secret/tenant_01/smtp_password",
+        "fromEmail": "no-reply@acmecorp.com",
+        "fromName": "ACME Document System",
+        "replyToEmail": "support@acmecorp.com"
+      },
+      "analytics": {
+        "googleAnalytics": {
+          "enabled": true,
+          "trackingId": "UA-12345678-1"
+        },
+        "mixpanel": {
+          "enabled": false
+        },
+        "customEvents": true
+      },
+      "crm": {
+        "provider": "salesforce",
+        "enabled": true,
+        "instanceUrl": "https://acmecorp.my.salesforce.com",
+        "apiVersion": "v56.0",
+        "secretsPath": "secret/tenant_01/salesforce"
+      },
+      "storage": {
+        "customS3": {
+          "enabled": false
+        },
+        "retention": {
+          "deleteAfterDays": 730,
+          "archiveAfterDays": 365
+        }
+      }
+    },
+    "workflow": {
+      "documentApproval": {
+        "enabled": true,
+        "levels": 2,
+        "requiredApprovers": 1,
+        "notifyOnChange": true,
+        "allowDelegation": true
+      },
+      "automaticTagging": {
+        "enabled": true,
+        "aiAssisted": true,
+        "minimumConfidence": 0.75,
+        "tagSources": ["predefined", "custom", "content_derived"]
+      },
+      "documentExpiry": {
+        "enabled": true,
+        "notificationDays": [30, 15, 7, 1],
+        "automaticArchiving": true
+      },
+      "customWorkflows": [
+        {
+          "id": "contract_review",
+          "name": "Contract Review",
+          "steps": [
+            {"name": "Initial Upload", "roles": ["creator"], "actions": ["upload", "tag"]},
+            {"name": "Legal Review", "roles": ["legal_reviewer"], "actions": ["view", "comment", "update", "approve"]},
+            {"name": "Finance Review", "roles": ["finance_reviewer"], "actions": ["view", "comment", "approve"]},
+            {"name": "Final Approval", "roles": ["contract_manager"], "actions": ["view", "approve", "reject", "finalize"]}
+          ]
+        },
+        {
+          "id": "marketing_content",
+          "name": "Marketing Content Approval",
+          "steps": [
+            {"name": "Draft", "roles": ["creator"], "actions": ["upload", "tag", "update"]},
+            {"name": "Content Review", "roles": ["content_reviewer"], "actions": ["view", "comment", "update", "approve"]},
+            {"name": "Brand Review", "roles": ["brand_reviewer"], "actions": ["view", "comment", "approve"]},
+            {"name": "Publish", "roles": ["marketing_manager"], "actions": ["view", "approve", "reject", "publish"]}
+          ]
+        }
+      ]
+    },
+    "features": {
+      "aiAnalysis": {
+        "enabled": true,
+        "modelSettings": {
+          "primary": "claude-3-sonnet",
+          "embeddings": "titan-embed-text",
+          "quota": 5000,
+          "customPrompts": true
+        },
+        "analysisTypes": ["summary", "entities", "sentiment", "classification", "custom"],
+        "customAnalysisTemplates": [
+          {
+            "id": "contract_analysis",
+            "name": "Contract Analysis",
+            "prompt": "Analyze this contract and extract the following information: 1) Parties involved, 2) Key dates including effective date and termination, 3) Payment terms, 4) Renewal provisions, 5) Termination conditions, 6) Governing law.",
+            "outputFormat": "json"
+          },
+          {
+            "id": "risk_assessment",
+            "name": "Risk Assessment",
+            "prompt": "Evaluate this document for potential risks including: 1) Financial commitments, 2) Legal liabilities, 3) Compliance issues, 4) Operational risks. Categorize each identified risk as Low, Medium, or High.",
+            "outputFormat": "json"
+          }
+        ]
+      },
+      "documentProcessing": {
+        "ocr": {
+          "enabled": true,
+          "languages": ["en", "es", "fr", "de"],
+          "enhancedQuality": true
+        },
+        "conversion": {
+          "enabled": true,
+          "targetFormats": ["pdf", "docx", "txt"],
+          "preserveFormatting": true
+        },
+        "redaction": {
+          "enabled": true,
+          "automaticPii": true,
+          "customRules": [
+            {"pattern": "\\b[A-Z]{2}\\d{6}\\b", "name": "Custom ID Format", "replace": "[REDACTED ID]"},
+            {"pattern": "\\bProject Nova\\b", "name": "Internal Project", "replace": "[REDACTED PROJECT]"}
+          ]
+        }
+      },
+      "collaboration": {
+        "commenting": {
+          "enabled": true,
+          "allowAttachments": true,
+          "allowMentions": true,
+          "notifyOnMention": true
+        },
+        "sharing": {
+          "external": true,
+          "expiringLinks": true,
+          "maxLinkAgeDays": 30,
+          "downloadRestriction": false,
+          "watermarking": true
+        },
+        "realTimeEditing": {
+          "enabled": true,
+          "maxConcurrentEditors": 10,
+          "showPresence": true
+        }
+      }
+    },
+    "createdAt": "2025-03-15T10:10:00Z",
+    "updatedAt": "2025-04-28T15:45:00Z",
+    "updatedBy": "usr_01"
+  },
+  {
+    "PK": "TENANT#tenant_02",
+    "SK": "CONFIG",
+    "tenantId": "tenant_02",
+    "branding": {
+      "primaryColor": "#00875A",
+      "secondaryColor": "#0747A6",
+      "accentColor": "#FF8B00",
+      "logoUrl": "https://storage.example.com/logos/globex-logo.png",
+      "favicon": "https://storage.example.com/logos/globex-favicon.ico",
+      "fontFamily": "Open Sans, sans-serif",
+      "customCss": ".navbar { background-color: #00875A; }",
+      "emailTemplate": "template_business_01"
+    },
+    "security": {
+      "passwordPolicy": {
+        "minLength": 10,
+        "requireUppercase": true,
+        "requireLowercase": true,
+        "requireNumbers": true,
+        "requireSymbols": false,
+        "preventReuse": 5,
+        "expiryDays": 120
+      },
+      "mfaSettings": {
+        "required": true,
+        "methods": ["app", "email"],
+        "graceLoginCount": 3,
+        "rememberDeviceDays": 60
+      },
+      "sessionSettings": {
+        "idleTimeoutMinutes": 60,
+        "maxSessionDays": 2,
+        "simultaneousLogins": true,
+        "deviceRestrictions": []
+      },
+      "ipRestrictions": [],
+      "auditSettings": {
+        "detailedLogin": true,
+        "documentAccess": true,
+        "adminActions": true,
+        "retentionDays": 180
+      }
+    },
+    "integrations": {
+      "sso": {
+        "enabled": false
+      },
+      "email": {
+        "provider": "ses",
+        "fromEmail": "no-reply@example.com",
+        "fromName": "Globex Document System",
+        "replyToEmail": "support@example.com"
+      },
+      "analytics": {
+        "googleAnalytics": {
+          "enabled": true,
+          "trackingId": "UA-87654321-2"
+        },
+        "mixpanel": {
+          "enabled": false
+        },
+        "customEvents": false
+      },
+      "crm": {
+        "provider": "none",
+        "enabled": false
+      },
+      "storage": {
+        "customS3": {
+          "enabled": false
+        },
+        "retention": {
+          "deleteAfterDays": 365,
+          "archiveAfterDays": 180
+        }
+      }
+    },
+    "workflow": {
+      "documentApproval": {
+        "enabled": true,
+        "levels": 1,
+        "requiredApprovers": 1,
+        "notifyOnChange": true,
+        "allowDelegation": false
+      },
+      "automaticTagging": {
+        "enabled": true,
+        "aiAssisted": true,
+        "minimumConfidence": 0.8,
+        "tagSources": ["predefined", "content_derived"]
+      },
+      "documentExpiry": {
+        "enabled": false
+      },
+      "customWorkflows": [
+        {
+          "id": "manufacturing_docs",
+          "name": "Manufacturing Documentation",
+          "steps": [
+            {"name": "Draft", "roles": ["creator"], "actions": ["upload", "tag", "update"]},
+            {"name": "Engineering Review", "roles": ["engineer"], "actions": ["view", "comment", "update", "approve"]},
+            {"name": "Quality Review", "roles": ["quality_manager"], "actions": ["view", "comment", "approve"]},
+            {"name": "Release", "roles": ["operations_manager"], "actions": ["view", "approve", "release"]}
+          ]
+        }
+      ]
+    },
+    "features": {
+      "aiAnalysis": {
+        "enabled": true,
+        "modelSettings": {
+          "primary": "claude-3-sonnet",
+          "embeddings": "titan-embed-text",
+          "quota": 2000,
+          "customPrompts": false
+        },
+        "analysisTypes": ["summary", "entities", "sentiment"],
+        "customAnalysisTemplates": []
+      },
+      "documentProcessing": {
+        "ocr": {
+          "enabled": true,
+          "languages": ["en"],
+          "enhancedQuality": false
+        },
+        "conversion": {
+          "enabled": true,
+          "targetFormats": ["pdf", "txt"],
+          "preserveFormatting": false
+        },
+        "redaction": {
+          "enabled": false
+        }
+      },
+      "collaboration": {
+        "commenting": {
+          "enabled": true,
+          "allowAttachments": false,
+          "allowMentions": true,
+          "notifyOnMention": true
+        },
+        "sharing": {
+          "external": true,
+          "expiringLinks": true,
+          "maxLinkAgeDays": 14,
+          "downloadRestriction": true,
+          "watermarking": false
+        },
+        "realTimeEditing": {
+          "enabled": false
+        }
+      }
+    },
+    "createdAt": "2025-03-20T14:40:00Z",
+    "updatedAt": "2025-04-22T11:30:00Z",
+    "updatedBy": "usr_04"
+  },
+  {
+    "PK": "TENANT#tenant_03",
+    "SK": "CONFIG",
+    "tenantId": "tenant_03",
+    "branding": {
+      "primaryColor": "#2E5BFF",
+      "secondaryColor": "#00C781",
+      "accentColor": "#FFC940",
+      "logoUrl": "https://storage.example.com/logos/sittech-logo.png",
+      "favicon": "https://storage.example.com/logos/sittech-favicon.ico",
+      "fontFamily": "Nunito, sans-serif",
+      "customCss": "",
+      "emailTemplate": "template_business_02"
+    },
+    "security": {
+      "passwordPolicy": {
+        "minLength": 12,
+        "requireUppercase": true,
+        "requireLowercase": true,
+        "requireNumbers": true,
+        "requireSymbols": true,
+        "preventReuse": 8,
+        "expiryDays": 60
+      },
+      "mfaSettings": {
+        "required": true,
+        "methods": ["app", "sms"],
+        "graceLoginCount": 0,
+        "rememberDeviceDays": 14
+      },
+      "sessionSettings": {
+        "idleTimeoutMinutes": 30,
+        "maxSessionDays": 1,
+        "simultaneousLogins": false,
+        "deviceRestrictions": ["mobile"]
+      },
+      "ipRestrictions": [
+        {
+          "name": "Corporate Network",
+          "cidr": "172.16.0.0/16",
+          "description": "SitTech corporate network"
+        }
+      ],
+      "auditSettings": {
+        "detailedLogin": true,
+        "documentAccess": true,
+        "adminActions": true,
+        "retentionDays": 730
+      }
+    },
+    "integrations": {
+      "sso": {
+        "enabled": true,
+        "provider": "azure_ad",
+        "entityId": "https://sso.sittech.io/saml2/service-provider",
+        "metadataUrl": "https://login.microsoftonline.com/tenantid/federationmetadata/2007-06/federationmetadata.xml",
+        "assertionConsumerService": "https://api.example.com/auth/saml/sittech",
+        "nameIdFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+      },
+      "email": {
+        "provider": "ses",
+        "fromEmail": "no-reply@example.com",
+        "fromName": "SitTech Document System",
+        "replyToEmail": "support@example.com"
+      },
+      "analytics": {
+        "googleAnalytics": {
+          "enabled": false
+        },
+        "mixpanel": {
+          "enabled": true,
+          "projectToken": "abcd1234efgh5678"
+        },
+        "customEvents": true
+      },
+      "crm": {
+        "provider": "none",
+        "enabled": false
+      },
+      "storage": {
+        "customS3": {
+          "enabled": false
+        },
+        "retention": {
+          "deleteAfterDays": 1095,
+          "archiveAfterDays": 730
+        }
+      }
+    },
+    "workflow": {
+      "documentApproval": {
+        "enabled": true,
+        "levels": 3,
+        "requiredApprovers": 2,
+        "notifyOnChange": true,
+        "allowDelegation": true
+      },
+      "automaticTagging": {
+        "enabled": true,
+        "aiAssisted": true,
+        "minimumConfidence": 0.9,
+        "tagSources": ["predefined", "custom", "content_derived"]
+      },
+      "documentExpiry": {
+        "enabled": true,
+        "notificationDays": [60, 30, 14, 7, 3, 1],
+        "automaticArchiving": true
+      },
+      "customWorkflows": [
+        {
+          "id": "clinical_protocol",
+          "name": "Clinical Protocol Review",
+          "steps": [
+            {"name": "Draft", "roles": ["clinical_researcher"], "actions": ["upload", "tag", "update"]},
+            {"name": "Medical Review", "roles": ["medical_director"], "actions": ["view", "comment", "update", "approve"]},
+            {"name": "Ethics Review", "roles": ["ethics_committee"], "actions": ["view", "comment", "approve", "reject"]},
+            {"name": "Compliance Check", "roles": ["compliance_officer"], "actions": ["view", "comment", "approve"]},
+            {"name": "Final Approval", "roles": ["chief_medical_officer"], "actions": ["view", "approve", "publish"]}
+          ]
+        },
+        {
+          "id": "patient_records",
+          "name": "Patient Records Management",
+          "steps": [
+            {"name": "Initial Entry", "roles": ["data_entry"], "actions": ["upload", "tag"]},
+            {"name": "Clinical Review", "roles": ["physician"], "actions": ["view", "update", "approve"]},
+            {"name": "Archiving", "roles": ["records_manager"], "actions": ["view", "archive"]}
+          ]
+        }
+      ]
+    },
+    "features": {
+      "aiAnalysis": {
+        "enabled": true,
+        "modelSettings": {
+          "primary": "claude-3-sonnet",
+          "embeddings": "titan-embed-text",
+          "quota": 3000,
+          "customPrompts": true
+        },
+        "analysisTypes": ["summary", "entities", "sentiment", "classification", "custom"],
+        "customAnalysisTemplates": [
+          {
+            "id": "medical_summary",
+            "name": "Medical Report Summary",
+            "prompt": "Summarize this medical report with focus on diagnosis, treatment plan, medications, and follow-up recommendations. Maintain clinical accuracy and highlight any critical warnings or contraindications.",
+            "outputFormat": "markdown"
+          },
+          {
+            "id": "protocol_compliance",
+            "name": "Protocol Compliance Check",
+            "prompt": "Analyze this clinical protocol document and identify any sections that may not comply with standard clinical practice guidelines, regulatory requirements, or ethical standards. List specific areas of concern and suggest improvements.",
+            "outputFormat": "json"
+          }
+        ]
+      },
+      "documentProcessing": {
+        "ocr": {
+          "enabled": true,
+          "languages": ["en", "es"],
+          "enhancedQuality": true
+        },
+        "conversion": {
+          "enabled": true,
+          "targetFormats": ["pdf", "docx", "txt"],
+          "preserveFormatting": true
+        },
+        "redaction": {
+          "enabled": true,
+          "automaticPii": true,
+          "customRules": [
+            {"pattern": "\\b\\d{3}-\\d{2}-\\d{4}\\b", "name": "SSN", "replace": "[REDACTED SSN]"},
+            {"pattern": "\\b[A-Z]{2}\\d{8}\\b", "name": "Patient ID", "replace": "[REDACTED PATIENT ID]"}
+          ]
+        }
+      },
+      "collaboration": {
+        "commenting": {
+          "enabled": true,
+          "allowAttachments": true,
+          "allowMentions": true,
+          "notifyOnMention": true
+        },
+        "sharing": {
+          "external": false,
+          "expiringLinks": true,
+          "maxLinkAgeDays": 7,
+          "downloadRestriction": true,
+          "watermarking": true
+        },
+        "realTimeEditing": {
+          "enabled": false
+        }
+      }
+    },
+    "createdAt": "2025-04-01T09:25:00Z",
+    "updatedAt": "2025-04-30T16:10:00Z",
+    "updatedBy": "usr_06"
+  }
+]

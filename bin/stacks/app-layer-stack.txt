@@ -1,0 +1,395 @@
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { BaseStack, BaseStackProps } from './base-stack';
+
+export interface AppLayerStackProps extends BaseStackProps {
+  readonly vpc: cdk.aws_ec2.Vpc;
+  readonly kmsKey: cdk.aws_kms.Key;
+  readonly dynamoTable: cdk.aws_dynamodb.Table;
+  readonly rdsInstance: cdk.aws_rds.DatabaseInstance;
+  readonly documentBucket: cdk.aws_s3.Bucket;
+  readonly userPool: cdk.aws_cognito.UserPool;
+  readonly knowledgeBase: cdk.CfnResource;
+}
+
+export class AppLayerStack extends BaseStack {
+  public readonly lambdaFunctions: Record<string, cdk.aws_lambda.Function> = {};
+  public readonly stepFunctions: Record<string, cdk.aws_stepfunctions.StateMachine> = {};
+
+  constructor(scope: Construct, id: string, props: AppLayerStackProps) {
+    super(scope, id, props);
+
+    // Create shared Lambda layers
+    const utilsLayer = new cdk.aws_lambda.LayerVersion(this, 'UtilsLayer', {
+      code: cdk.aws_lambda.Code.fromAsset('lambda/layers/utils'),
+      compatibleRuntimes: [
+        cdk.aws_lambda.Runtime.NODEJS_18_X,
+        cdk.aws_lambda.Runtime.PYTHON_3_11,
+      ],
+      description: 'Common utilities layer',
+    });
+
+    const dbLayer = new cdk.aws_lambda.LayerVersion(this, 'DbLayer', {
+      code: cdk.aws_lambda.Code.fromAsset('lambda/layers/database'),
+      compatibleRuntimes: [
+        cdk.aws_lambda.Runtime.NODEJS_18_X,
+        cdk.aws_lambda.Runtime.PYTHON_3_11,
+      ],
+      description: 'Database access layer',
+    });
+    
+    // Security group for Lambda functions
+    const lambdaSecurityGroup = new cdk.aws_ec2.SecurityGroup(this, 'LambdaSecurityGroup', {
+      vpc: props.vpc,
+      description: 'Security group for Lambda functions',
+      allowAllOutbound: true,
+    });
+
+    // Create Lambda execution role with permissions
+    const lambdaExecutionRole = new cdk.aws_iam.Role(this, 'LambdaExecutionRole', {
+      assumedBy: new cdk.aws_iam.ServicePrincipal('lambda.amazonaws.com'),
+      managedPolicies: [
+        cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
+        cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+      ],
+    });
+
+    // Add DynamoDB permissions
+    lambdaExecutionRole.addToPrincipalPolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'dynamodb:GetItem',
+          'dynamodb:PutItem',
+          'dynamodb:UpdateItem',
+          'dynamodb:DeleteItem',
+          'dynamodb:Query',
+          'dynamodb:Scan',
+          'dynamodb:BatchGetItem',
+          'dynamodb:BatchWriteItem',
+          'dynamodb:TransactGetItems',
+          'dynamodb:TransactWriteItems',
+        ],
+        resources: [
+          props.dynamoTable.tableArn,
+          `${props.dynamoTable.tableArn}/index/*`,
+        ],
+      })
+    );
+
+    // Add S3 permissions
+    lambdaExecutionRole.addToPrincipalPolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          's3:GetObject',
+          's3:PutObject',
+          's3:ListBucket',
+          's3:DeleteObject',
+        ],
+        resources: [
+          props.documentBucket.bucketArn,
+          `${props.documentBucket.bucketArn}/*`,
+        ],
+      })
+    );
+
+    // Add KMS permissions
+    lambdaExecutionRole.addToPrincipalPolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'kms:Decrypt',
+          'kms:GenerateDataKey',
+        ],
+        resources: [props.kmsKey.keyArn],
+      })
+    );
+
+    // Add Bedrock permissions
+    lambdaExecutionRole.addToPrincipalPolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'bedrock:InvokeModel',
+          'bedrock:InvokeAgent',
+          'bedrock:Retrieve',
+        ],
+        resources: ['*'],
+      })
+    );
+
+    // Define Lambda function environment variables
+    const lambdaEnvironment = {
+      DYNAMODB_TABLE: props.dynamoTable.tableName,
+      DOCUMENT_BUCKET: props.documentBucket.bucketName,
+      USER_POOL_ID: props.userPool.userPoolId,
+      KNOWLEDGE_BASE_ID: props.knowledgeBase.getAtt('KnowledgeBaseId').toString(),
+      KMS_KEY_ARN: props.kmsKey.keyArn,
+      APP_ENV: props.stage,
+    };
+
+    // Authentication Lambda
+    this.lambdaFunctions['auth'] = new cdk.aws_lambda.Function(this, 'AuthFunction', {
+      runtime: cdk.aws_lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/auth'),
+      role: lambdaExecutionRole,
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 512,
+      environment: lambdaEnvironment,
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function for authentication',
+      layers: [utilsLayer],
+    });
+
+    // User Management Lambda
+    this.lambdaFunctions['users'] = new cdk.aws_lambda.Function(this, 'UsersFunction', {
+      runtime: cdk.aws_lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/users'),
+      role: lambdaExecutionRole,
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 512,
+      environment: lambdaEnvironment,
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function for user management',
+      layers: [utilsLayer, dbLayer],
+    });
+
+    // Add Cognito permissions to user management Lambda
+    this.lambdaFunctions['users'].addToRolePolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'cognito-idp:AdminCreateUser',
+          'cognito-idp:AdminUpdateUserAttributes',
+          'cognito-idp:AdminDeleteUser',
+          'cognito-idp:AdminAddUserToGroup',
+          'cognito-idp:AdminRemoveUserFromGroup',
+          'cognito-idp:ListUsers',
+          'cognito-idp:ListUsersInGroup',
+        ],
+        resources: [props.userPool.userPoolArn],
+      })
+    );
+
+    // Document Management Lambda
+    this.lambdaFunctions['documents'] = new cdk.aws_lambda.Function(this, 'DocumentsFunction', {
+      runtime: cdk.aws_lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/documents'),
+      role: lambdaExecutionRole,
+      timeout: cdk.Duration.minutes(5),
+      memorySize: 1024,
+      environment: lambdaEnvironment,
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function for document management',
+      layers: [utilsLayer, dbLayer],
+    });
+
+    // AI Service Lambda
+    this.lambdaFunctions['ai'] = new cdk.aws_lambda.Function(this, 'AiFunction', {
+      runtime: cdk.aws_lambda.Runtime.PYTHON_3_11,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/ai-service'),
+      role: lambdaExecutionRole,
+      timeout: cdk.Duration.minutes(10),
+      memorySize: 2048,
+      environment: lambdaEnvironment,
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function for AI services',
+      layers: [utilsLayer],
+    });
+
+    // Data Access Lambda
+    this.lambdaFunctions['data'] = new cdk.aws_lambda.Function(this, 'DataFunction', {
+      runtime: cdk.aws_lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/data-access'),
+      role: lambdaExecutionRole,
+      timeout: cdk.Duration.seconds(30),
+      memorySize: 512,
+      environment: {
+        ...lambdaEnvironment,
+        DB_SECRET_ARN: props.rdsInstance.secret?.secretArn || '',
+      },
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function for data access',
+      layers: [utilsLayer, dbLayer],
+    });
+
+    // Grant additional permissions for RDS access
+    if (props.rdsInstance.secret) {
+      props.rdsInstance.secret.grantRead(this.lambdaFunctions['data']);
+    }
+    
+    // Define a workflow for the upload process
+    this.stepFunctions['uploadWorkflow'] = new cdk.aws_stepfunctions.StateMachine(this, 'UploadWorkflow', {
+      definitionBody: cdk.aws_stepfunctions.DefinitionBody.fromChainable(
+        new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'ValidateDocument', {
+          lambdaFunction: this.lambdaFunctions['documents'],
+          payload: cdk.aws_stepfunctions.TaskInput.fromObject({
+            action: 'VALIDATE',
+            document: cdk.aws_stepfunctions.JsonPath.entirePayload,
+          }),
+          outputPath: '$.Payload',
+        }).next(
+          new cdk.aws_stepfunctions.Choice(this, 'IsDocumentValid')
+            .when(
+              cdk.aws_stepfunctions.Condition.booleanEquals('$.isValid', true),
+              new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'ProcessDocument', {
+                lambdaFunction: this.lambdaFunctions['documents'],
+                payload: cdk.aws_stepfunctions.TaskInput.fromObject({
+                  action: 'PROCESS',
+                  document: cdk.aws_stepfunctions.JsonPath.entirePayload,
+                }),
+                outputPath: '$.Payload',
+              }).next(
+                new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'StoreMetadata', {
+                  lambdaFunction: this.lambdaFunctions['data'],
+                  payload: cdk.aws_stepfunctions.TaskInput.fromObject({
+                    action: 'STORE',
+                    metadata: cdk.aws_stepfunctions.JsonPath.entirePayload,
+                  }),
+                  outputPath: '$.Payload',
+                }).next(
+                  new cdk.aws_stepfunctions.Succeed(this, 'UploadSucceeded')
+                )
+              )
+            )
+            .otherwise(
+              new cdk.aws_stepfunctions.Fail(this, 'ValidationFailed', {
+                cause: 'Document validation failed',
+                error: 'ValidationError',
+              })
+            )
+        )
+      ),
+      timeout: cdk.Duration.minutes(30),
+      stateMachineName: `${props.projectName}-${props.stage}-upload-workflow`,
+      stateMachineType: cdk.aws_stepfunctions.StateMachineType.STANDARD,
+    });
+
+    // Define a workflow for AI processing
+    this.stepFunctions['aiWorkflow'] = new cdk.aws_stepfunctions.StateMachine(this, 'AiWorkflow', {
+      definitionBody: cdk.aws_stepfunctions.DefinitionBody.fromChainable(
+        new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'FetchDocument', {
+          lambdaFunction: this.lambdaFunctions['documents'],
+          payload: cdk.aws_stepfunctions.TaskInput.fromObject({
+            action: 'FETCH',
+            documentId: cdk.aws_stepfunctions.JsonPath.stringAt('$.documentId'),
+          }),
+          outputPath: '$.Payload',
+        }).next(
+          new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'AnalyzeContent', {
+            lambdaFunction: this.lambdaFunctions['ai'],
+            payload: cdk.aws_stepfunctions.TaskInput.fromObject({
+              action: 'ANALYZE',
+              document: cdk.aws_stepfunctions.JsonPath.entirePayload,
+              options: cdk.aws_stepfunctions.JsonPath.objectAt('$.options'),
+            }),
+            outputPath: '$.Payload',
+          }).next(
+            new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'StoreResults', {
+              lambdaFunction: this.lambdaFunctions['data'],
+              payload: cdk.aws_stepfunctions.TaskInput.fromObject({
+                action: 'STORE_ANALYSIS',
+                results: cdk.aws_stepfunctions.JsonPath.entirePayload,
+              }),
+              outputPath: '$.Payload',
+            }).next(
+              new cdk.aws_stepfunctions.Succeed(this, 'AnalysisSucceeded')
+            )
+          )
+        )
+      ),
+      timeout: cdk.Duration.minutes(30),
+      stateMachineName: `${props.projectName}-${props.stage}-ai-workflow`,
+      stateMachineType: cdk.aws_stepfunctions.StateMachineType.STANDARD,
+    });
+
+    // EventBridge Rule for scheduling batch jobs
+    const batchProcessingRule = new cdk.aws_events.Rule(this, 'BatchProcessingRule', {
+      schedule: cdk.aws_events.Schedule.cron({ 
+        minute: '0',
+        hour: '0',
+        weekDay: '*',
+        month: '*',
+        year: '*'
+      }),
+      description: 'Daily batch processing job',
+      enabled: true,
+    });
+
+    // Add Lambda target for the batch processing
+    batchProcessingRule.addTarget(
+      new cdk.aws_events_targets.LambdaFunction(this.lambdaFunctions['data'], {
+        event: cdk.aws_events.RuleTargetInput.fromObject({
+          action: 'BATCH_PROCESS',
+          timestamp: new Date().toISOString(),
+        }),
+        retryAttempts: 3,
+      })
+    );
+
+    // Create AWS EventBridge for inter-service communication
+    const eventBus = new cdk.aws_events.EventBus(this, 'ApplicationEventBus', {
+      eventBusName: `${props.projectName}-${props.stage}-events`,
+    });
+
+    // Create event rules for specific events
+    new cdk.aws_events.Rule(this, 'DocumentProcessedRule', {
+      eventBus,
+      description: 'Rule to trigger when a document is processed',
+      eventPattern: {
+        source: ['com.myapp.documents'],
+        detailType: ['DocumentProcessed'],
+      },
+      targets: [
+        new cdk.aws_events_targets.SfnStateMachine(this.stepFunctions['aiWorkflow'], {
+          input: cdk.aws_events.RuleTargetInput.fromEventPath('$.detail'),
+        }),
+      ],
+    });
+
+    // Grant EventBridge permissions to Lambda functions
+    for (const functionName in this.lambdaFunctions) {
+      eventBus.grantPutEventsTo(this.lambdaFunctions[functionName]);
+    }
+
+    // Outputs
+    Object.entries(this.lambdaFunctions).forEach(([name, func]) => {
+      this.createOutput(`${name}FunctionArn`, func.functionArn, `${name} Lambda Function ARN`);
+      this.createSsmParameter(`${name}FunctionArn`, func.functionArn);
+    });
+
+    Object.entries(this.stepFunctions).forEach(([name, sf]) => {
+      this.createOutput(`${name}StateMachineArn`, sf.stateMachineArn, `${name} Step Function State Machine ARN`);
+      this.createSsmParameter(`${name}StateMachineArn`, sf.stateMachineArn);
+    });
+
+    this.createOutput('EventBusArn', eventBus.eventBusArn, 'Application Event Bus ARN');
+    this.createSsmParameter('EventBusArn', eventBus.eventBusArn);
+  }
+}

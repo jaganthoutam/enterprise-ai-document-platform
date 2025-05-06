@@ -1,0 +1,242 @@
+[
+  {
+    "PK": "TENANT#tenant_01",
+    "SK": "METADATA",
+    "id": "tenant_01",
+    "name": "ACME Corporation",
+    "industry": "Technology",
+    "tier": "enterprise",
+    "status": "active",
+    "createdAt": "2025-03-15T10:00:00Z",
+    "subscriptionEnd": "2026-03-15T10:00:00Z",
+    "contactEmail": "admin@acmecorp.com",
+    "contactPhone": "+1-555-123-4567",
+    "address": {
+      "street": "123 Tech Boulevard",
+      "city": "San Francisco",
+      "state": "CA",
+      "zipCode": "94105",
+      "country": "USA"
+    },
+    "settings": {
+      "maxUsers": 100,
+      "maxStorage": 5000,
+      "aiFeatures": true,
+      "customDomain": true,
+      "customBranding": true,
+      "ssoEnabled": true,
+      "dataRetentionDays": 365,
+      "securitySettings": {
+        "mfaRequired": true,
+        "passwordPolicy": "strict",
+        "sessionTimeout": 120,
+        "ipRestrictions": ["192.168.1.0/24", "10.0.0.0/16"]
+      }
+    },
+    "usage": {
+      "activeUsers": 78,
+      "storageUsed": 3245,
+      "documentsCount": 1567,
+      "aiRequestsMonthly": 4356
+    },
+    "billing": {
+      "plan": "enterprise",
+      "amount": 5000,
+      "frequency": "monthly",
+      "paymentMethod": "invoice",
+      "billingContact": "finance@acmecorp.com"
+    }
+  },
+  {
+    "PK": "TENANT#tenant_02",
+    "SK": "METADATA",
+    "id": "tenant_02",
+    "name": "Globex Solutions",
+    "industry": "Manufacturing",
+    "tier": "business",
+    "status": "active",
+    "createdAt": "2025-03-20T14:30:00Z",
+    "subscriptionEnd": "2026-03-20T14:30:00Z",
+    "contactEmail": "admin@globex.com",
+    "contactPhone": "+1-555-345-6789",
+    "address": {
+      "street": "456 Industrial Way",
+      "city": "Chicago",
+      "state": "IL",
+      "zipCode": "60611",
+      "country": "USA"
+    },
+    "settings": {
+      "maxUsers": 50,
+      "maxStorage": 2000,
+      "aiFeatures": true,
+      "customDomain": true,
+      "customBranding": true,
+      "ssoEnabled": false,
+      "dataRetentionDays": 180,
+      "securitySettings": {
+        "mfaRequired": true,
+        "passwordPolicy": "medium",
+        "sessionTimeout": 60,
+        "ipRestrictions": []
+      }
+    },
+    "usage": {
+      "activeUsers": 42,
+      "storageUsed": 1587,
+      "documentsCount": 892,
+      "aiRequestsMonthly": 2145
+    },
+    "billing": {
+      "plan": "business",
+      "amount": 2000,
+      "frequency": "monthly",
+      "paymentMethod": "credit_card",
+      "billingContact": "accounts@globex.com"
+    }
+  },
+  {
+    "PK": "TENANT#tenant_03",
+    "SK": "METADATA",
+    "id": "tenant_03",
+    "name": "SitTech Innovations",
+    "industry": "Healthcare",
+    "tier": "business",
+    "status": "active",
+    "createdAt": "2025-04-01T09:15:00Z",
+    "subscriptionEnd": "2026-04-01T09:15:00Z",
+    "contactEmail": "admin@sittech.io",
+    "contactPhone": "+1-555-678-9012",
+    "address": {
+      "street": "789 Medical Drive",
+      "city": "Boston",
+      "state": "MA",
+      "zipCode": "02115",
+      "country": "USA"
+    },
+    "settings": {
+      "maxUsers": 30,
+      "maxStorage": 1500,
+      "aiFeatures": true,
+      "customDomain": true,
+      "customBranding": false,
+      "ssoEnabled": true,
+      "dataRetentionDays": 730,
+      "securitySettings": {
+        "mfaRequired": true,
+        "passwordPolicy": "strict",
+        "sessionTimeout": 30,
+        "ipRestrictions": ["172.16.0.0/16"]
+      }
+    },
+    "usage": {
+      "activeUsers": 28,
+      "storageUsed": 987,
+      "documentsCount": 645,
+      "aiRequestsMonthly": 1896
+    },
+    "billing": {
+      "plan": "business",
+      "amount": 1800,
+      "frequency": "monthly",
+      "paymentMethod": "invoice",
+      "billingContact": "finance@sittech.io"
+    }
+  },
+  {
+    "PK": "TENANT#tenant_04",
+    "SK": "METADATA",
+    "id": "tenant_04",
+    "name": "VentureBoost Capital",
+    "industry": "Finance",
+    "tier": "enterprise",
+    "status": "active",
+    "createdAt": "2025-04-10T11:30:00Z",
+    "subscriptionEnd": "2026-04-10T11:30:00Z",
+    "contactEmail": "admin@ventureboost.com",
+    "contactPhone": "+1-555-890-1234",
+    "address": {
+      "street": "101 Financial Boulevard",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10005",
+      "country": "USA"
+    },
+    "settings": {
+      "maxUsers": 75,
+      "maxStorage": 4000,
+      "aiFeatures": true,
+      "customDomain": true,
+      "customBranding": true,
+      "ssoEnabled": true,
+      "dataRetentionDays": 730,
+      "securitySettings": {
+        "mfaRequired": true,
+        "passwordPolicy": "strict",
+        "sessionTimeout": 15,
+        "ipRestrictions": ["198.51.100.0/24", "203.0.113.0/24"]
+      }
+    },
+    "usage": {
+      "activeUsers": 62,
+      "storageUsed": 2876,
+      "documentsCount": 1239,
+      "aiRequestsMonthly": 3567
+    },
+    "billing": {
+      "plan": "enterprise",
+      "amount": 5000,
+      "frequency": "monthly",
+      "paymentMethod": "invoice",
+      "billingContact": "accounting@ventureboost.com"
+    }
+  },
+  {
+    "PK": "TENANT#tenant_05",
+    "SK": "METADATA",
+    "id": "tenant_05",
+    "name": "EcoSmart Solutions",
+    "industry": "Environmental",
+    "tier": "standard",
+    "status": "active",
+    "createdAt": "2025-04-15T13:45:00Z",
+    "subscriptionEnd": "2026-04-15T13:45:00Z",
+    "contactEmail": "admin@ecosmart.org",
+    "contactPhone": "+1-555-234-5678",
+    "address": {
+      "street": "202 Green Avenue",
+      "city": "Portland",
+      "state": "OR",
+      "zipCode": "97204",
+      "country": "USA"
+    },
+    "settings": {
+      "maxUsers": 15,
+      "maxStorage": 500,
+      "aiFeatures": false,
+      "customDomain": false,
+      "customBranding": false,
+      "ssoEnabled": false,
+      "dataRetentionDays": 90,
+      "securitySettings": {
+        "mfaRequired": false,
+        "passwordPolicy": "medium",
+        "sessionTimeout": 60,
+        "ipRestrictions": []
+      }
+    },
+    "usage": {
+      "activeUsers": 12,
+      "storageUsed": 345,
+      "documentsCount": 287,
+      "aiRequestsMonthly": 0
+    },
+    "billing": {
+      "plan": "standard",
+      "amount": 500,
+      "frequency": "monthly",
+      "paymentMethod": "credit_card",
+      "billingContact": "info@ecosmart.org"
+    }
+  }
+]

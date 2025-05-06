@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+  
+  <!-- Left Sidebar -->
+  <rect x="0" y="0" width="240" height="800" fill="#0052CC"/>
+  
+  <!-- Logo -->
+  <rect x="20" y="20" width="200" height="60" rx="4" fill="#ffffff" opacity="0.9"/>
+  <text x="50" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">ACME DOCS</text>
+  
+  <!-- Sidebar Menu -->
+  <g transform="translate(20, 120)">
+    <!-- Dashboard Item -->
+    <circle cx="25" cy="20" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="25" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Dashboard</text>
+    
+    <!-- Documents Item - Active -->
+    <rect x="0" y="50" width="200" height="40" rx="4" fill="#ffffff" opacity="0.2"/>
+    <circle cx="25" cy="70" r="10" fill="#ffffff"/>
+    <text x="50" y="75" font-family="Arial, sans-serif" font-size="14" fill="#ffffff">Documents</text>
+    
+    <!-- AI Analysis Item -->
+    <circle cx="25" cy="120" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="125" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">AI Analysis</text>
+    
+    <!-- Chat Item -->
+    <circle cx="25" cy="170" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="175" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">AI Assistant</text>
+    
+    <!-- Approvals Item -->
+    <circle cx="25" cy="220" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="225" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Approvals</text>
+    
+    <!-- Settings Item -->
+    <circle cx="25" cy="270" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="275" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Settings</text>
+  </g>
+  
+  <!-- User Profile -->
+  <circle cx="50" cy="740" r="25" fill="#ffffff"/>
+  <text x="90" y="745" font-family="Arial, sans-serif" font-size="14" fill="#ffffff">Admin User</text>
+  
+  <!-- Main Content Area -->
+  <!-- Header -->
+  <rect x="240" y="0" width="960" height="70" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  <text x="270" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#212529">ACME Corp Services Agreement</text>
+  
+  <!-- Document Actions -->
+  <rect x="800" y="15" width="40" height="40" rx="4" fill="#F8F9FA" stroke="#e9ecef" stroke-width="1"/>
+  <text x="820" y="40" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#212529">⬇️</text>
+  
+  <rect x="850" y="15" width="40" height="40" rx="4" fill="#F8F9FA" stroke="#e9ecef" stroke-width="1"/>
+  <text x="870" y="40" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#212529">📤</text>
+  
+  <rect x="900" y="15" width="40" height="40" rx="4" fill="#F8F9FA" stroke="#e9ecef" stroke-width="1"/>
+  <text x="920" y="40" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#212529">🔍</text>
+  
+  <rect x="950" y="15" width="40" height="40" rx="4" fill="#F8F9FA" stroke="#e9ecef" stroke-width="1"/>
+  <text x="970" y="40" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#212529">⚙️</text>
+  
+  <rect x="1000" y="15" width="80" height="40" rx="4" fill="#0052CC"/>
+  <text x="1040" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#ffffff">Analyze</text>
+  
+  <!-- Document Metadata -->
+  <rect x="240" y="70" width="960" height="60" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  <text x="270" y="105" font-family="Arial, sans-serif" font-size="14" fill="#6c757d">Contract • PDF • 2.4 MB • Uploaded: April 15, 2025 • Status: Active • Version: 1</text>
+  <text x="900" y="105" font-family="Arial, sans-serif" font-size="14" fill="#6c757d">Owner: Admin User • Access: Private</text>
+  
+  <!-- Main Content Split -->
+  <rect x="240" y="130" width="600" height="670" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="840" y="130" width="360" height="670" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  
+  <!-- Document Viewer -->
+  <rect x="270" y="160" width="540" height="620" fill="#f1f3f5" stroke="#e9ecef" stroke-width="1"/>
+  
+  <!-- Document Content Mock -->
+  <text x="300" y="200" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#212529">MASTER SERVICES AGREEMENT</text>
+  <text x="300" y="240" font-family="Arial, sans-serif" font-size="14" fill="#495057">This Master Services Agreement (the "Agreement") is made and entered into as of May 1, 2025 (the "Effective Date"), by and between ACME Corporation, a Delaware corporation ("Client"), and GlobalTech Solutions, a California corporation ("Service Provider").</text>
+  
+  <text x="300" y="290" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#212529">1. SERVICES</text>
+  <text x="300" y="320" font-family="Arial, sans-serif" font-size="14" fill="#495057">1.1 Service Provider shall provide to Client the services ("Services") described in one or more statements of work to be issued by Client and accepted by Service Provider (each, a "Statement of Work" or "SOW").</text>
+  <text x="300" y="350" font-family="Arial, sans-serif" font-size="14" fill="#495057">1.2 Each SOW shall include, at a minimum, a description of the Services to be performed, the timeline for performance, the fees to be paid, and any deliverables to be provided to Client.</text>
+  
+  <text x="300" y="400" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#212529">2. PAYMENT TERMS</text>
+  <text x="300" y="430" font-family="Arial, sans-serif" font-size="14" fill="#495057">2.1 Client shall pay Service Provider the fees specified in each SOW. Unless otherwise specified in an SOW, Service Provider shall invoice Client monthly for Services performed.</text>
+  <text x="300" y="460" font-family="Arial, sans-serif" font-size="14" fill="#495057">2.2 Payment terms are net thirty (30) days from receipt of invoice. All payments shall be made in U.S. dollars.</text>
+  
+  <text x="300" y="510" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#212529">3. TERM AND TERMINATION</text>
+  <text x="300" y="540" font-family="Arial, sans-serif" font-size="14" fill="#495057">3.1 This Agreement shall commence on the Effective Date and continue for a period of one (1) year, unless earlier terminated as provided herein.</text>
+  <text x="300" y="570" font-family="Arial, sans-serif" font-size="14" fill="#495057">3.2 Either party may terminate this Agreement for material breach upon thirty (30) days written notice to the other party if such breach remains uncured.</text>
+  
+  <!-- AI Analysis Panel -->
+  <text x="870" y="170" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#212529">AI Analysis</text>
+  
+  <!-- Analysis Tabs -->
+  <rect x="870" y="190" width="100" height="30" rx="4" fill="#0052CC"/>
+  <text x="920" y="210" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#ffffff">Summary</text>
+  
+  <rect x="980" y="190" width="100" height="30" rx="4" fill="#f1f3f5" stroke="#e9ecef" stroke-width="1"/>
+  <text x="1030" y="210" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#495057">Entities</text>
+  
+  <rect x="1090" y="190" width="80" height="30" rx="4" fill="#f1f3f5" stroke="#e9ecef" stroke-width="1"/>
+  <text x="1130" y="210" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#495057">More</text>
+  
+  <!-- Analysis Content -->
+  <rect x="870" y="240" width="300" height="540" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1" rx="4"/>
+  
+  <text x="890" y="270" font-family="Arial, sans-serif" font-size="14" fill="#212529" font-weight="bold">Summary</text>
+  <text x="890" y="300" font-family="Arial, sans-serif" font-size="14" fill="#495057">This Master Services Agreement between ACME Corporation and GlobalTech Solutions outlines the terms for software development services. Key provisions include:</text>
+  
+  <g transform="translate(890, 330)">
+    <rect x="0" y="0" width="8" height="8" rx="4" fill="#0052CC"/>
+    <text x="20" y="8" font-family="Arial, sans-serif" font-size="14" fill="#495057">Initial term of one year with automatic renewal</text>
+    
+    <rect x="0" y="30" width="8" height="8" rx="4" fill="#0052CC"/>
+    <text x="20" y="38" font-family="Arial, sans-serif" font-size="14" fill="#495057">Payment terms of net-30 with detailed invoicing requirements</text>
+    
+    <rect x="0" y="60" width="8" height="8" rx="4" fill="#0052CC"/>
+    <text x="20" y="68" font-family="Arial, sans-serif" font-size="14" fill="#495057">Confidentiality obligations for both parties</text>
+    
+    <rect x="0" y="90" width="8" height="8" rx="4" fill="#0052CC"/>
+    <text x="20" y="98" font-family="Arial, sans-serif" font-size="14" fill="#495057">Intellectual property rights assignment to ACME for all deliverables</text>
+    
+    <rect x="0" y="120" width="8" height="8" rx="4" fill="#0052CC"/>
+    <text x="20" y="128" font-family="Arial, sans-serif" font-size="14" fill="#495057">Limited warranty and liability caps</text>
+  </g>
+  
+  <text x="890" y="490" font-family="Arial, sans-serif" font-size="14" fill="#495057">The agreement includes standard clauses for termination, force majeure, and dispute resolution through arbitration.</text>
+  
+  <text x="890" y="540" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">Generated on April 30, 2025</text>
+  <text x="890" y="560" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">Model: Claude 3 Sonnet</text>
+  
+  <!-- Run More Analysis Button -->
+  <rect x="890" y="600" width="260" height="40" rx="4" fill="#0052CC"/>
+  <text x="1020" y="625" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#ffffff">Run More Analysis</text>
+  
+  <!-- Document Info Footer -->
+  <rect x="870" y="680" width="300" height="80" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1" rx="4"/>
+  <text x="890" y="705" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">Document Properties</text>
+  <text x="890" y="730" font-family="Arial, sans-serif" font-size="12" fill="#495057">Created by: Admin User on April 15, 2025</text>
+  <text x="890" y="750" font-family="Arial, sans-serif" font-size="12" fill="#495057">Tags: legal, agreement, services, acme</text>
+</svg>

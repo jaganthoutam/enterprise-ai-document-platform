@@ -1,0 +1,282 @@
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import { BaseStack, BaseStackProps } from './base-stack';
+
+export interface DataProcessingLayerStackProps extends BaseStackProps {
+  readonly vpc: cdk.aws_ec2.Vpc;
+  readonly kmsKey: cdk.aws_kms.Key;
+  readonly documentBucket: cdk.aws_s3.Bucket;
+}
+
+export class DataProcessingLayerStack extends BaseStack {
+  public readonly vectorIndex: cdk.aws_opensearchserverless.CfnCollection;
+  public readonly embeddingFunction: cdk.aws_lambda.Function;
+  public readonly dataProcessingRole: cdk.aws_iam.Role;
+  public readonly dataTransformFunction: cdk.aws_lambda.Function;
+
+  constructor(scope: Construct, id: string, props: DataProcessingLayerStackProps) {
+    super(scope, id, props);
+
+    // Create IAM role for data processing
+    this.dataProcessingRole = new cdk.aws_iam.Role(this, 'DataProcessingRole', {
+      assumedBy: new cdk.aws_iam.ServicePrincipal('lambda.amazonaws.com'),
+      managedPolicies: [
+        cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'),
+        cdk.aws_iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+      ],
+    });
+
+    // Add permissions to the role
+    this.dataProcessingRole.addToPrincipalPolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          's3:GetObject',
+          's3:PutObject',
+          's3:ListBucket',
+        ],
+        resources: [
+          props.documentBucket.bucketArn,
+          `${props.documentBucket.bucketArn}/*`,
+        ],
+      })
+    );
+
+    // Allow access to KMS key for encryption/decryption
+    this.dataProcessingRole.addToPrincipalPolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'kms:Decrypt',
+          'kms:GenerateDataKey',
+        ],
+        resources: [props.kmsKey.keyArn],
+      })
+    );
+
+    // Create security group for Lambda functions
+    const lambdaSecurityGroup = new cdk.aws_ec2.SecurityGroup(this, 'LambdaSecurityGroup', {
+      vpc: props.vpc,
+      description: 'Security group for Lambda functions',
+      allowAllOutbound: true,
+    });
+
+    // S3 Data Processing Lambda
+    const s3ProcessingFunction = new cdk.aws_lambda.Function(this, 'S3ProcessingFunction', {
+      runtime: cdk.aws_lambda.Runtime.PYTHON_3_11,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/s3-processor'),
+      role: this.dataProcessingRole,
+      timeout: cdk.Duration.minutes(5),
+      memorySize: 1024,
+      environment: {
+        DOCUMENT_BUCKET: props.documentBucket.bucketName,
+        KMS_KEY_ARN: props.kmsKey.keyArn,
+      },
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function to process S3 objects',
+    });
+
+    // Add S3 event notification to trigger Lambda
+    props.documentBucket.addEventNotification(
+      cdk.aws_s3.EventType.OBJECT_CREATED,
+      new cdk.aws_s3_notifications.LambdaDestination(s3ProcessingFunction),
+      { prefix: 'uploads/' }
+    );
+
+    // Create OpenSearch Serverless Collection for Vector Search
+    this.vectorIndex = new cdk.aws_opensearchserverless.CfnCollection(this, 'VectorSearchCollection', {
+      name: `${props.projectName}-${props.stage}-vectors`,
+      type: 'VECTORSEARCH',
+      description: 'Vector embeddings collection for semantic search',
+    });
+
+    // Create OpenSearch Serverless access policy
+    const openSearchAccessPolicy = new cdk.aws_opensearchserverless.CfnAccessPolicy(this, 'OpenSearchAccessPolicy', {
+      name: `${props.projectName}-${props.stage}-access-policy`,
+      type: 'data',
+      description: 'Access policy for OpenSearch Serverless collection',
+      policy: JSON.stringify([
+        {
+          Rules: [
+            {
+              ResourceType: 'collection',
+              Resource: [`collection/${this.vectorIndex.name}`],
+              Permission: [
+                'aoss:CreateCollectionItems',
+                'aoss:DeleteCollectionItems',
+                'aoss:UpdateCollectionItems',
+                'aoss:DescribeCollectionItems',
+              ],
+            },
+            {
+              ResourceType: 'index',
+              Resource: [`index/${this.vectorIndex.name}/*`],
+              Permission: [
+                'aoss:CreateIndex',
+                'aoss:DeleteIndex',
+                'aoss:UpdateIndex',
+                'aoss:DescribeIndex',
+                'aoss:ReadDocument',
+                'aoss:WriteDocument',
+              ],
+            },
+          ],
+          Principal: [this.dataProcessingRole.roleArn],
+          Description: 'Access policy for vector search operations',
+        },
+      ]),
+    });
+
+    // Create OpenSearch Serverless encryption policy
+    const openSearchEncryptionPolicy = new cdk.aws_opensearchserverless.CfnSecurityPolicy(this, 'OpenSearchEncryptionPolicy', {
+      name: `${props.projectName}-${props.stage}-encryption-policy`,
+      type: 'encryption',
+      description: 'Encryption policy for OpenSearch Serverless collection',
+      policy: JSON.stringify({
+        Rules: [
+          {
+            ResourceType: 'collection',
+            Resource: [`collection/${this.vectorIndex.name}`],
+          },
+        ],
+        AWSOwnedKey: true,
+      }),
+    });
+
+    // Create OpenSearch Serverless network policy
+    const openSearchNetworkPolicy = new cdk.aws_opensearchserverless.CfnSecurityPolicy(this, 'OpenSearchNetworkPolicy', {
+      name: `${props.projectName}-${props.stage}-network-policy`,
+      type: 'network',
+      description: 'Network policy for OpenSearch Serverless collection',
+      policy: JSON.stringify([
+        {
+          Rules: [
+            {
+              ResourceType: 'collection',
+              Resource: [`collection/${this.vectorIndex.name}`],
+            },
+          ],
+          AllowFromPublic: false,
+          SourceVPCEs: [
+            // Add VPC Endpoint ID here once created
+          ],
+        },
+      ]),
+    });
+
+    // Create Vector Embedding Lambda
+    this.embeddingFunction = new cdk.aws_lambda.Function(this, 'VectorEmbeddingFunction', {
+      runtime: cdk.aws_lambda.Runtime.PYTHON_3_11,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/vector-embedding'),
+      role: this.dataProcessingRole,
+      timeout: cdk.Duration.minutes(10),
+      memorySize: 2048,
+      environment: {
+        OPENSEARCH_COLLECTION_NAME: this.vectorIndex.name,
+        DOCUMENT_BUCKET: props.documentBucket.bucketName,
+        KMS_KEY_ARN: props.kmsKey.keyArn,
+      },
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function to create vector embeddings',
+    });
+
+    // Add Bedrock permissions to embedding function
+    this.embeddingFunction.addToRolePolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'bedrock:InvokeModel',
+        ],
+        resources: [`arn:aws:bedrock:${this.region}::foundation-model/amazon.titan-embed-text-v1`],
+      })
+    );
+
+    // Add OpenSearch Serverless permissions to embedding function
+    this.embeddingFunction.addToRolePolicy(
+      new cdk.aws_iam.PolicyStatement({
+        effect: cdk.aws_iam.Effect.ALLOW,
+        actions: [
+          'aoss:APIAccessAll',
+        ],
+        resources: [this.vectorIndex.attrArn],
+      })
+    );
+
+    // Create Step Function for embedding workflow
+    const embeddingWorkflow = new cdk.aws_stepfunctions.StateMachine(this, 'EmbeddingWorkflow', {
+      definitionBody: cdk.aws_stepfunctions.DefinitionBody.fromChainable(
+        new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'ProcessDocument', {
+          lambdaFunction: s3ProcessingFunction,
+          outputPath: '$.Payload',
+        }).next(
+          new cdk.aws_stepfunctions_tasks.LambdaInvoke(this, 'CreateEmbedding', {
+            lambdaFunction: this.embeddingFunction,
+            outputPath: '$.Payload',
+          })
+        )
+      ),
+      timeout: cdk.Duration.minutes(15),
+      stateMachineName: `${props.projectName}-${props.stage}-embedding-workflow`,
+      stateMachineType: cdk.aws_stepfunctions.StateMachineType.STANDARD,
+    });
+
+    // Create Data Transformation Lambda
+    this.dataTransformFunction = new cdk.aws_lambda.Function(this, 'DataTransformationFunction', {
+      runtime: cdk.aws_lambda.Runtime.PYTHON_3_11,
+      handler: 'index.handler',
+      code: cdk.aws_lambda.Code.fromAsset('lambda/data-transform'),
+      role: this.dataProcessingRole,
+      timeout: cdk.Duration.minutes(5),
+      memorySize: 1024,
+      environment: {
+        DOCUMENT_BUCKET: props.documentBucket.bucketName,
+        KMS_KEY_ARN: props.kmsKey.keyArn,
+      },
+      vpc: props.vpc,
+      vpcSubnets: {
+        subnetType: cdk.aws_ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      description: 'Lambda function for data transformation',
+    });
+
+    // EventBridge rule to trigger data processing workflow
+    new cdk.aws_events.Rule(this, 'DocumentProcessingRule', {
+      description: 'Rule to trigger document processing workflow',
+      eventPattern: {
+        source: ['aws.s3'],
+        detailType: ['AWS API Call via CloudTrail'],
+        detail: {
+          eventSource: ['s3.amazonaws.com'],
+          eventName: ['PutObject', 'CompleteMultipartUpload'],
+          requestParameters: {
+            bucketName: [props.documentBucket.bucketName],
+          },
+        },
+      },
+      targets: [
+        new cdk.aws_events_targets.SfnStateMachine(embeddingWorkflow),
+      ],
+    });
+
+    // Outputs
+    this.createOutput('VectorIndexId', this.vectorIndex.attrId, 'OpenSearch Serverless Vector Index ID');
+    this.createOutput('EmbeddingFunctionArn', this.embeddingFunction.functionArn, 'Vector Embedding Lambda Function ARN');
+    this.createOutput('DataTransformFunctionArn', this.dataTransformFunction.functionArn, 'Data Transformation Lambda Function ARN');
+
+    // SSM Parameters
+    this.createSsmParameter('VectorIndexId', this.vectorIndex.attrId);
+    this.createSsmParameter('EmbeddingFunctionArn', this.embeddingFunction.functionArn);
+    this.createSsmParameter('DataTransformFunctionArn', this.dataTransformFunction.functionArn);
+  }
+}

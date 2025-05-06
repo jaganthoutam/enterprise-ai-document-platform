@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8f9fa"/>
+  
+  <!-- Left Sidebar -->
+  <rect x="0" y="0" width="240" height="800" fill="#0052CC"/>
+  
+  <!-- Logo -->
+  <rect x="20" y="20" width="200" height="60" rx="4" fill="#ffffff" opacity="0.9"/>
+  <text x="50" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">ACME DOCS</text>
+  
+  <!-- Sidebar Menu -->
+  <g transform="translate(20, 120)">
+    <!-- Dashboard Item -->
+    <circle cx="25" cy="20" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="25" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Dashboard</text>
+    
+    <!-- Documents Item -->
+    <circle cx="25" cy="70" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="75" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Documents</text>
+    
+    <!-- AI Analysis Item -->
+    <circle cx="25" cy="120" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="125" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">AI Analysis</text>
+    
+    <!-- Chat Item - Active -->
+    <rect x="0" y="150" width="200" height="40" rx="4" fill="#ffffff" opacity="0.2"/>
+    <circle cx="25" cy="170" r="10" fill="#ffffff"/>
+    <text x="50" y="175" font-family="Arial, sans-serif" font-size="14" fill="#ffffff">AI Assistant</text>
+    
+    <!-- Approvals Item -->
+    <circle cx="25" cy="220" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="225" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Approvals</text>
+    
+    <!-- Settings Item -->
+    <circle cx="25" cy="270" r="10" fill="#ffffff" opacity="0.7"/>
+    <text x="50" y="275" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.7">Settings</text>
+  </g>
+  
+  <!-- User Profile -->
+  <circle cx="50" cy="740" r="25" fill="#ffffff"/>
+  <text x="90" y="745" font-family="Arial, sans-serif" font-size="14" fill="#ffffff">John Smith</text>
+  
+  <!-- Main Content Area -->
+  <!-- Header -->
+  <rect x="240" y="0" width="960" height="70" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  <text x="270" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#212529">AI Assistant</text>
+  
+  <!-- New Chat Button -->
+  <rect x="1030" y="15" width="140" height="40" rx="4" fill="#0052CC"/>
+  <text x="1100" y="40" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#ffffff">New Conversation</text>
+  
+  <!-- Main Chat Area -->
+  <rect x="240" y="70" width="960" height="730" fill="#ffffff"/>
+  
+  <!-- Conversation History Sidebar -->
+  <rect x="240" y="70" width="250" height="730" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1"/>
+  
+  <!-- Search Conversations -->
+  <rect x="260" y="90" width="210" height="40" rx="20" fill="#f1f3f5" stroke="#e9ecef" stroke-width="1"/>
+  <text x="290" y="115" font-family="Arial, sans-serif" font-size="14" fill="#6c757d">Search conversations...</text>
+  <circle x="450" y="110" r="10" fill="#6c757d"/>
+  
+  <!-- Conversation List -->
+  <g transform="translate(260, 150)">
+    <!-- Active Conversation -->
+    <rect x="0" y="0" width="210" height="60" rx="4" fill="#0052CC" opacity="0.1" stroke="#0052CC" stroke-width="1"/>
+    <text x="15" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">Services Agreement Info</text>
+    <text x="15" y="45" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">Today at 9:15 AM</text>
+    
+    <!-- Other Conversations -->
+    <rect x="0" y="70" width="210" height="60" rx="4" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+    <text x="15" y="95" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">Customer Satisfaction Data</text>
+    <text x="15" y="115" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">Yesterday at 2:30 PM</text>
+    
+    <rect x="0" y="140" width="210" height="60" rx="4" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+    <text x="15" y="165" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">System Architecture Help</text>
+    <text x="15" y="185" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">May 3, 2025</text>
+    
+    <rect x="0" y="210" width="210" height="60" rx="4" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+    <text x="15" y="235" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">Environmental Assessment</text>
+    <text x="15" y="255" font-family="Arial, sans-serif" font-size="12" fill="#6c757d">May 4, 2025</text>
+  </g>
+  
+  <!-- Chat Messages Area -->
+  <rect x="490" y="70" width="710" height="650" fill="#ffffff"/>
+  
+  <!-- Messages -->
+  <g transform="translate(520, 100)">
+    <!-- User Message 1 -->
+    <rect x="0" y="0" width="500" height="80" rx="8" fill="#f1f3f5"/>
+    <text x="20" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">You</text>
+    <text x="20" y="55" font-family="Arial, sans-serif" font-size="14" fill="#495057">Can you help me find information about our services agreement with ACME Corp?</text>
+    
+    <!-- AI Response 1 -->
+    <rect x="0" y="100" width="650" height="150" rx="8" fill="#EBF5FF"/>
+    <text x="20" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0052CC">AI Assistant</text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="14" fill="#495057">I found a document titled 'ACME Corp Services Agreement' in your organization's repository. It's a master services agreement for software development services between ACME Corporation and GlobalTech Solutions. The agreement is effective from May 1, 2025 to May 1, 2026.</text>
+    <text x="20" y="185" font-family="Arial, sans-serif" font-size="14" fill="#495057">Would you like me to provide a summary of the key terms or are you looking for specific information within this agreement?</text>
+    
+    <!-- Sources Reference -->
+    <rect x="20" y="210" width="200" height="30" rx="15" fill="#0052CC" opacity="0.1"/>
+    <text x="40" y="230" font-family="Arial, sans-serif" font-size="12" fill="#0052CC">Source: ACME Corp Services Agreement</text>
+    
+    <!-- User Message 2 -->
+    <rect x="0" y="270" width="300" height="50" rx="8" fill="#f1f3f5"/>
+    <text x="20" y="300" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">You</text>
+    <text x="20" y="325" font-family="Arial, sans-serif" font-size="14" fill="#495057">Can you give me a summary of the key terms?</text>
+    
+    <!-- AI Response 2 -->
+    <rect x="0" y="340" width="650" height="230" rx="8" fill="#EBF5FF"/>
+    <text x="20" y="370" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0052CC">AI Assistant</text>
+    <text x="20" y="395" font-family="Arial, sans-serif" font-size="14" fill="#495057">Here's a summary of the key terms in the ACME Corp Services Agreement:</text>
+    
+    <!-- Bullet Points -->
+    <text x="40" y="425" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Term: Initial term of one year (May 1, 2025 to May 1, 2026) with automatic renewal unless terminated with 60 days' notice.</text>
+    <text x="40" y="455" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Payment: Net-30 payment terms with detailed invoicing requirements. Rates are fixed during the initial term.</text>
+    <text x="40" y="485" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Intellectual Property: All deliverables and work products are assigned to ACME Corporation upon payment.</text>
+    <text x="40" y="515" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Termination: Either party may terminate for material breach with 30 days' notice to cure. ACME may terminate any SOW with 15 days' notice.</text>
+    <text x="20" y="545" font-family="Arial, sans-serif" font-size="14" fill="#495057">The agreement was signed by Jane Smith (CEO, ACME) and Michael Johnson (CTO, GlobalTech).</text>
+    
+    <!-- Sources Reference -->
+    <rect x="20" y="560" width="200" height="30" rx="15" fill="#0052CC" opacity="0.1"/>
+    <text x="40" y="580" font-family="Arial, sans-serif" font-size="12" fill="#0052CC">Source: ACME Corp Services Agreement</text>
+  </g>
+  
+  <!-- Message Input -->
+  <rect x="490" y="720" width="710" height="80" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  <rect x="520" y="735" width="600" height="50" rx="25" fill="#f1f3f5" stroke="#e9ecef" stroke-width="1"/>
+  <text x="550" y="765" font-family="Arial, sans-serif" font-size="14" fill="#6c757d">Type your message...</text>
+  <circle cx="1150" cy="760" r="20" fill="#0052CC"/>
+  <text x="1150" y="765" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#ffffff">→</text>
+</svg>

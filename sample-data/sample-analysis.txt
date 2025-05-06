@@ -1,0 +1,337 @@
+[
+  {
+    "PK": "ANALYSIS#analysis_001",
+    "SK": "METADATA",
+    "GSI1PK": "usr_01",
+    "GSI1SK": "2025-04-30T10:15:00Z",
+    "GSI2PK": "DOC#doc_001",
+    "GSI2SK": "2025-04-30T10:15:00Z",
+    "id": "analysis_001",
+    "documentId": "doc_001",
+    "userId": "usr_01",
+    "analysisType": "summary",
+    "result": "This Master Services Agreement between ACME Corporation and GlobalTech Solutions outlines the terms for software development services. Key provisions include: 1) Initial term of one year with automatic renewal; 2) Payment terms of net-30 with detailed invoicing requirements; 3) Confidentiality obligations for both parties; 4) Intellectual property rights assignment to ACME for all deliverables; 5) Limited warranty and liability caps. The agreement includes standard clauses for termination, force majeure, and dispute resolution through arbitration.",
+    "createdAt": "2025-04-30T10:15:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 5234,
+      "outputTokens": 512,
+      "totalTokens": 5746
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_002",
+    "SK": "METADATA",
+    "GSI1PK": "usr_01",
+    "GSI1SK": "2025-04-30T10:30:00Z",
+    "GSI2PK": "DOC#doc_001",
+    "GSI2SK": "2025-04-30T10:30:00Z",
+    "id": "analysis_002",
+    "documentId": "doc_001",
+    "userId": "usr_01",
+    "analysisType": "entities",
+    "result": {
+      "people": [
+        {"name": "Jane Smith", "role": "CEO, ACME Corporation", "mentions": 3},
+        {"name": "Michael Johnson", "role": "CTO, GlobalTech Solutions", "mentions": 2},
+        {"name": "Robert Wilson", "role": "Legal Counsel, ACME Corporation", "mentions": 1}
+      ],
+      "organizations": [
+        {"name": "ACME Corporation", "type": "Client", "mentions": 15},
+        {"name": "GlobalTech Solutions", "type": "Service Provider", "mentions": 12}
+      ],
+      "locations": [
+        {"name": "Delaware", "context": "Jurisdiction", "mentions": 2},
+        {"name": "San Francisco, CA", "context": "ACME HQ", "mentions": 1}
+      ],
+      "dates": [
+        {"date": "2025-05-01", "context": "Effective Date", "mentions": 2},
+        {"date": "2026-05-01", "context": "Expiration Date", "mentions": 2},
+        {"date": "Net-30", "context": "Payment Terms", "mentions": 3}
+      ],
+      "key_terms": [
+        {"term": "Intellectual Property", "context": "Rights Assignment", "mentions": 7},
+        {"term": "Confidential Information", "context": "Protection", "mentions": 9},
+        {"term": "Deliverables", "context": "Software Components", "mentions": 14},
+        {"term": "Service Level Agreement", "context": "Performance Metrics", "mentions": 5},
+        {"term": "Force Majeure", "context": "Unforeseeable Circumstances", "mentions": 2}
+      ]
+    },
+    "createdAt": "2025-04-30T10:30:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 5234,
+      "outputTokens": 789,
+      "totalTokens": 6023
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_003",
+    "SK": "METADATA",
+    "GSI1PK": "usr_02",
+    "GSI1SK": "2025-04-30T11:15:00Z",
+    "GSI2PK": "DOC#doc_003",
+    "GSI2SK": "2025-04-30T11:15:00Z",
+    "id": "analysis_003",
+    "documentId": "doc_003",
+    "userId": "usr_02",
+    "analysisType": "summary",
+    "result": "This presentation outlines the comprehensive product launch strategy for the XR5000 series. It details a three-phase rollout plan starting in June 2025, targeting enterprise customers first, followed by mid-market and then small business segments. Key marketing activities include industry conference presentations, digital advertising campaigns, and partner co-marketing initiatives. The sales strategy emphasizes solution selling with ROI calculators and case studies. The presentation also identifies potential risks including supply chain constraints and competitive responses, with corresponding mitigation strategies.",
+    "createdAt": "2025-04-30T11:15:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 4325,
+      "outputTokens": 611,
+      "totalTokens": 4936
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_004",
+    "SK": "METADATA",
+    "GSI1PK": "usr_03",
+    "GSI1SK": "2025-04-30T13:45:00Z",
+    "GSI2PK": "DOC#doc_004",
+    "GSI2SK": "2025-04-30T13:45:00Z",
+    "id": "analysis_004",
+    "documentId": "doc_004",
+    "userId": "usr_03",
+    "analysisType": "sentiment",
+    "result": {
+      "overall_sentiment": "Positive",
+      "confidence_score": 87,
+      "explanation": "The survey results demonstrate predominantly positive customer sentiment with 78% of respondents rating their satisfaction as 'Excellent' or 'Good'. Positive feedback focuses on product quality, customer service responsiveness, and user interface improvements. There are isolated pockets of negative sentiment (14% 'Poor' or 'Very Poor' ratings) primarily related to pricing structure and documentation quality.",
+      "key_positive_factors": [
+        {"factor": "Customer service responsiveness", "sentiment_score": 92},
+        {"factor": "Product quality", "sentiment_score": 89},
+        {"factor": "User interface", "sentiment_score": 84},
+        {"factor": "Feature completeness", "sentiment_score": 79}
+      ],
+      "key_negative_factors": [
+        {"factor": "Pricing structure", "sentiment_score": 41},
+        {"factor": "Documentation quality", "sentiment_score": 37},
+        {"factor": "Mobile experience", "sentiment_score": 52}
+      ],
+      "trend": "Improving (compared to previous quarter's 72% positive rating)"
+    },
+    "createdAt": "2025-04-30T13:45:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 5678,
+      "outputTokens": 894,
+      "totalTokens": 6572
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_005",
+    "SK": "METADATA",
+    "GSI1PK": "usr_04",
+    "GSI1SK": "2025-05-01T09:20:00Z",
+    "GSI2PK": "DOC#doc_005",
+    "GSI2SK": "2025-05-01T09:20:00Z",
+    "id": "analysis_005",
+    "documentId": "doc_005",
+    "userId": "usr_04",
+    "analysisType": "summary",
+    "result": "This proposal outlines a comprehensive supply chain optimization strategy with projected cost savings of $3.2M annually. It recommends implementing a new inventory management system, renegotiating carrier contracts, and establishing regional distribution centers. The ROI analysis indicates a 2.1-year payback period on the $1.5M investment. Implementation is structured in three phases over 18 months, beginning with technology upgrades, followed by process redesigns, and concluding with supplier integration. Key performance metrics include inventory turnover increase (20%), lead time reduction (35%), and transportation cost reduction (15%).",
+    "createdAt": "2025-05-01T09:20:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 6789,
+      "outputTokens": 534,
+      "totalTokens": 7323
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_006",
+    "SK": "METADATA",
+    "GSI1PK": "usr_06",
+    "GSI1SK": "2025-05-01T10:45:00Z",
+    "GSI2PK": "DOC#doc_007",
+    "GSI2SK": "2025-05-01T10:45:00Z",
+    "id": "analysis_006",
+    "documentId": "doc_007",
+    "userId": "usr_06",
+    "analysisType": "entities",
+    "result": {
+      "components": [
+        {"name": "API Gateway", "type": "Service", "mentions": 24},
+        {"name": "DynamoDB", "type": "Database", "mentions": 18},
+        {"name": "Lambda Functions", "type": "Compute", "mentions": 37},
+        {"name": "S3 Storage", "type": "Storage", "mentions": 15},
+        {"name": "CloudFront", "type": "CDN", "mentions": 12},
+        {"name": "Cognito", "type": "Authentication", "mentions": 22},
+        {"name": "EventBridge", "type": "Event Bus", "mentions": 14},
+        {"name": "Amazon Bedrock", "type": "AI Service", "mentions": 19}
+      ],
+      "technologies": [
+        {"name": "React.js", "context": "Frontend", "mentions": 11},
+        {"name": "React Native", "context": "Mobile", "mentions": 9},
+        {"name": "Node.js", "context": "Backend", "mentions": 17},
+        {"name": "Python", "context": "Data Processing", "mentions": 13},
+        {"name": "TypeScript", "context": "Code Quality", "mentions": 8}
+      ],
+      "protocols": [
+        {"name": "HTTPS", "context": "Security", "mentions": 15},
+        {"name": "WebSocket", "context": "Real-time", "mentions": 7},
+        {"name": "OAuth 2.0", "context": "Authorization", "mentions": 12}
+      ],
+      "limits_and_quotas": [
+        {"name": "API Rate Limits", "value": "10 requests/second per user", "mentions": 3},
+        {"name": "Lambda Timeout", "value": "30 seconds", "mentions": 5},
+        {"name": "Maximum Document Size", "value": "50MB", "mentions": 2}
+      ]
+    },
+    "createdAt": "2025-05-01T10:45:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 7865,
+      "outputTokens": 923,
+      "totalTokens": 8788
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_007",
+    "SK": "METADATA",
+    "GSI1PK": "usr_07",
+    "GSI1SK": "2025-05-01T14:15:00Z",
+    "GSI2PK": "DOC#doc_008",
+    "GSI2SK": "2025-05-01T14:15:00Z",
+    "id": "analysis_007",
+    "documentId": "doc_008",
+    "userId": "usr_07",
+    "analysisType": "summary",
+    "result": "This market research report analyzes seven emerging technology trends expected to impact businesses significantly through 2026. It identifies generative AI, quantum computing, and edge computing as the top three transformative technologies. The report forecasts a 34% CAGR for the generative AI market, reaching $98B by 2027. For each technology, the report provides adoption timelines, industry-specific impact analyses, and recommended implementation strategies. It highlights healthcare, manufacturing, and financial services as the sectors positioned to benefit most from early adoption of these technologies.",
+    "createdAt": "2025-05-01T14:15:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 8934,
+      "outputTokens": 578,
+      "totalTokens": 9512
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_008",
+    "SK": "METADATA",
+    "GSI1PK": "usr_02",
+    "GSI1SK": "2025-05-02T09:30:00Z",
+    "GSI2PK": "DOC#doc_009",
+    "GSI2SK": "2025-05-02T09:30:00Z",
+    "id": "analysis_008",
+    "documentId": "doc_009",
+    "userId": "usr_02",
+    "analysisType": "sentiment",
+    "result": {
+      "overall_sentiment": "Neutral",
+      "confidence_score": 92,
+      "explanation": "The information security policy document maintains a neutral, authoritative tone throughout, as appropriate for a formal policy document. The language is precise, directive, and focuses on procedural requirements rather than expressing opinions or emotions. The most emotionally charged language appears in sections describing consequences of non-compliance, but even these maintain professional objectivity.",
+      "key_tonal_elements": [
+        {"element": "Authority", "strength": "High"},
+        {"element": "Formality", "strength": "High"},
+        {"element": "Clarity", "strength": "Medium-High"},
+        {"element": "Urgency", "strength": "Medium"}
+      ],
+      "language_pattern": "Predominantly uses imperative voice ('must', 'shall', 'will') to establish requirements",
+      "audience_consideration": "Written for technical and non-technical employees with clearly defined responsibilities"
+    },
+    "createdAt": "2025-05-02T09:30:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 5234,
+      "outputTokens": 756,
+      "totalTokens": 5990
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_009",
+    "SK": "METADATA",
+    "GSI1PK": "usr_01",
+    "GSI1SK": "2025-05-02T11:20:00Z",
+    "GSI2PK": "DOC#doc_010",
+    "GSI2SK": "2025-05-02T11:20:00Z",
+    "id": "analysis_009",
+    "documentId": "doc_010",
+    "userId": "usr_01",
+    "analysisType": "custom",
+    "result": {
+      "meeting_structure": [
+        {"segment": "Introduction", "timestamp": "00:00:00-00:03:45", "speaker": "CEO Jane Doe"},
+        {"segment": "Q1 Financial Results", "timestamp": "00:03:46-00:18:30", "speaker": "CFO Alan Johnson"},
+        {"segment": "Product Roadmap", "timestamp": "00:18:31-00:35:15", "speaker": "CTO Maria Garcia"},
+        {"segment": "Sales Performance", "timestamp": "00:35:16-00:48:45", "speaker": "VP Sales Tom Wilson"},
+        {"segment": "HR Initiatives", "timestamp": "00:48:46-01:05:20", "speaker": "VP HR Sarah Ahmed"},
+        {"segment": "Q&A Session", "timestamp": "01:05:21-01:25:45", "speaker": "Multiple"},
+        {"segment": "Closing Remarks", "timestamp": "01:25:46-01:30:25", "speaker": "CEO Jane Doe"}
+      ],
+      "key_announcements": [
+        {"announcement": "Q1 revenue exceeded targets by 12%", "speaker": "CFO Alan Johnson", "timestamp": "00:07:20"},
+        {"announcement": "New product line launching in Q3", "speaker": "CTO Maria Garcia", "timestamp": "00:22:15"},
+        {"announcement": "Opening new office in Singapore", "speaker": "CEO Jane Doe", "timestamp": "00:02:30"},
+        {"announcement": "Enhanced parental leave policy", "speaker": "VP HR Sarah Ahmed", "timestamp": "00:52:40"}
+      ],
+      "sentiment_trends": {
+        "leadership_tone": "Confident and optimistic",
+        "employee_questions": "Generally positive with concerns about expansion pace",
+        "overall_mood": "Energetic and forward-looking"
+      },
+      "action_items": [
+        {"item": "Department heads to submit Q2 projections", "due": "2025-04-20"},
+        {"item": "All employees to complete new security training", "due": "2025-05-15"},
+        {"item": "Product team to finalize Q3 launch timeline", "due": "2025-04-30"}
+      ]
+    },
+    "createdAt": "2025-05-02T11:20:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 10547,
+      "outputTokens": 1234,
+      "totalTokens": 11781
+    }
+  },
+  {
+    "PK": "ANALYSIS#analysis_010",
+    "SK": "METADATA",
+    "GSI1PK": "usr_04",
+    "GSI1SK": "2025-05-02T15:10:00Z",
+    "GSI2PK": "DOC#doc_014",
+    "GSI2SK": "2025-05-02T15:10:00Z",
+    "id": "analysis_010",
+    "documentId": "doc_014",
+    "userId": "usr_04",
+    "analysisType": "entities",
+    "result": {
+      "environmental_factors": [
+        {"factor": "Air Quality", "impact_level": "Medium", "mentions": 23},
+        {"factor": "Water Resources", "impact_level": "High", "mentions": 35},
+        {"factor": "Soil Quality", "impact_level": "Low", "mentions": 18},
+        {"factor": "Biodiversity", "impact_level": "Medium-Low", "mentions": 14},
+        {"factor": "Noise Pollution", "impact_level": "Medium", "mentions": 21},
+        {"factor": "Energy Consumption", "impact_level": "High", "mentions": 29}
+      ],
+      "regulations_cited": [
+        {"regulation": "Clean Air Act", "context": "Emissions Standards", "mentions": 8},
+        {"regulation": "Clean Water Act", "context": "Effluent Guidelines", "mentions": 11},
+        {"regulation": "NEPA", "context": "Assessment Requirements", "mentions": 15},
+        {"regulation": "ISO 14001", "context": "Environmental Management", "mentions": 7}
+      ],
+      "stakeholders": [
+        {"name": "Local Community", "concern": "Water Quality, Noise", "mentions": 19},
+        {"name": "Environmental Protection Agency", "concern": "Regulatory Compliance", "mentions": 24},
+        {"name": "Wildlife Conservation Group", "concern": "Habitat Preservation", "mentions": 9},
+        {"name": "Local Business Association", "concern": "Economic Benefits", "mentions": 6}
+      ],
+      "mitigation_measures": [
+        {"measure": "Water Recycling System", "target_impact": "Water Usage Reduction", "mentions": 12},
+        {"measure": "Solar Panel Installation", "target_impact": "Energy Self-Sufficiency", "mentions": 8},
+        {"measure": "Noise Dampening Technology", "target_impact": "Reduced Noise Pollution", "mentions": 10},
+        {"measure": "Native Plant Landscaping", "target_impact": "Biodiversity Support", "mentions": 7}
+      ]
+    },
+    "createdAt": "2025-05-02T15:10:00Z",
+    "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+    "usage": {
+      "inputTokens": 8765,
+      "outputTokens": 1076,
+      "totalTokens": 9841
+    }
+  }
+]
