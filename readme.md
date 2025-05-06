@@ -1,4 +1,4 @@
-# AWS Serverless Multi-Tier Application
+# AWS Bedrock for AI-powered document analysis and processing
 
 A serverless multi-tier application leveraging AWS Bedrock for AI-powered document analysis and processing.
 
