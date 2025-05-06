@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="600" y="60" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="36" fill="#333333">AWS Serverless Multi-Tier Architecture</text>
+
+  <!-- Client Layer -->
+  <g transform="translate(50, 120)">
+    <rect width="240" height="160" rx="10" fill="#5B79C2" stroke="#333333" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">Client Layer</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#E6EFFF" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">Web Application</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#E6EFFF" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">Mobile Application</text>
+  </g>
+
+  <!-- API Layer -->
+  <g transform="translate(350, 120)">
+    <rect width="240" height="160" rx="10" fill="#7BB36A" stroke="#333333" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">API Layer</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#E8F5E4" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">REST API</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#E8F5E4" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">Authentication</text>
+  </g>
+
+  <!-- Core Engine -->
+  <g transform="translate(650, 120)">
+    <rect width="240" height="160" rx="10" fill="#E28744" stroke="#333333" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">Core Engine</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">Application Lambdas</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">Step Functions</text>
+  </g>
+
+  <!-- External Services -->
+  <g transform="translate(950, 120)">
+    <rect width="240" height="160" rx="10" fill="#7C55A1" stroke="#333333" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">External Services</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#E6DCEF" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">Cloud Services</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#E6DCEF" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">AI/ML Services</text>
+  </g>
+
+  <!-- Memory Layer -->
+  <g transform="translate(50, 340)">
+    <rect width="240" height="160" rx="10" fill="#E7D155" stroke="#333333" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">Storage Layer</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#FBF6D9" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">DynamoDB</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#FBF6D9" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">S3 Storage</text>
+  </g>
+
+  <!-- Planning Layer -->
+  <g transform="translate(350, 340)">
+    <rect width="240" height="160" rx="10" fill="#5B9BD5" stroke="#333333" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">Data Processing</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#DEEAF6" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">ETL Pipelines</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#DEEAF6" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">Vector Embeddings</text>
+  </g>
+
+  <!-- Agent Layer -->
+  <g transform="translate(650, 340)">
+    <rect width="540" height="160" rx="10" fill="#E28744" stroke="#333333" stroke-width="2"/>
+    <text x="270" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">Amazon Bedrock Layer</text>
+    
+    <rect x="45" y="60" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="85" text-anchor="middle" font-family="Arial" font-size="16">Knowledge Bases</text>
+    
+    <rect x="45" y="110" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="16">Generative Agent</text>
+    
+    <rect x="215" y="60" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="290" y="85" text-anchor="middle" font-family="Arial" font-size="16">Agents for Bedrock</text>
+    
+    <rect x="215" y="110" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="290" y="135" text-anchor="middle" font-family="Arial" font-size="16">Data Agent</text>
+    
+    <rect x="385" y="60" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="460" y="85" text-anchor="middle" font-family="Arial" font-size="16">Guardrails</text>
+    
+    <rect x="385" y="110" width="150" height="40" rx="6" fill="#FAEBD8" stroke="#333333" stroke-width="1"/>
+    <text x="460" y="135" text-anchor="middle" font-family="Arial" font-size="16">Foundation Models</text>
+  </g>
+
+  <!-- Technology Stack -->
+  <g transform="translate(170, 560)">
+    <rect width="900" height="150" rx="10" fill="#A4A4A4" stroke="#333333" stroke-width="2"/>
+    <text x="450" y="40" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="24" fill="#FFFFFF">Technology Stack</text>
+    
+    <rect x="30" y="70" width="120" height="50" rx="6" fill="#EFEFEF" stroke="#333333" stroke-width="1"/>
+    <text x="90" y="102" text-anchor="middle" font-family="Arial" font-size="16">AWS API Gateway</text>
+    
+    <rect x="170" y="70" width="120" height="50" rx="6" fill="#EFEFEF" stroke="#333333" stroke-width="1"/>
+    <text x="230" y="102" text-anchor="middle" font-family="Arial" font-size="16">AWS Lambda</text>
+    
+    <rect x="310" y="70" width="120" height="50" rx="6" fill="#EFEFEF" stroke="#333333" stroke-width="1"/>
+    <text x="370" y="102" text-anchor="middle" font-family="Arial" font-size="16">DynamoDB</text>
+    
+    <rect x="450" y="70" width="120" height="50" rx="6" fill="#EFEFEF" stroke="#333333" stroke-width="1"/>
+    <text x="510" y="102" text-anchor="middle" font-family="Arial" font-size="16">OpenSearch</text>
+    
+    <rect x="590" y="70" width="120" height="50" rx="6" fill="#EFEFEF" stroke="#333333" stroke-width="1"/>
+    <text x="650" y="102" text-anchor="middle" font-family="Arial" font-size="16">Cognito</text>
+    
+    <rect x="730" y="70" width="120" height="50" rx="6" fill="#EFEFEF" stroke="#333333" stroke-width="1"/>
+    <text x="790" y="102" text-anchor="middle" font-family="Arial" font-size="16">AWS Bedrock</text>
+  </g>
+
+  <!-- Arrows -->
+  <g stroke="#333333" stroke-width="2" fill="none">
+    <!-- Client to API -->
+    <path d="M290,200 L350,200" marker-end="url(#arrowhead)"/>
+    
+    <!-- API to Core -->
+    <path d="M590,200 L650,200" marker-end="url(#arrowhead)"/>
+    
+    <!-- Core to External -->
+    <path d="M890,200 L950,200" marker-end="url(#arrowhead)"/>
+    
+    <!-- Core to Storage -->
+    <path d="M770,280 L300,340" marker-end="url(#arrowhead)"/>
+    
+    <!-- Core to Data Processing -->
+    <path d="M770,280 L470,340" marker-end="url(#arrowhead)"/>
+    
+    <!-- Core to Bedrock -->
+    <path d="M770,280 L770,340" marker-end="url(#arrowhead)"/>
+    
+    <!-- Data Processing to Bedrock -->
+    <path d="M590,420 L650,420" marker-end="url(#arrowhead)"/>
+  </g>
+
+  <!-- Arrow Marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <!-- Footer -->
+  <text x="600" y="750" text-anchor="middle" font-family="Arial" font-size="14">github.com/ACME/aws-serverless-architecture</text>
+</svg>
