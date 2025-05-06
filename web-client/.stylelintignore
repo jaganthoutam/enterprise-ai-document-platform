@@ -1,0 +1,43 @@
+# Dependencies
+node_modules
+build
+dist
+coverage
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Version control
+.git
+.gitignore
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build files
+*.log
+*.tgz
+*.zip
+*.tar.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated files
+*.d.ts
+*.js.map
+*.css.map
+*.scss.map
+*.less.map
+
+# Third-party CSS
+**/node_modules/**
+**/vendor/** 

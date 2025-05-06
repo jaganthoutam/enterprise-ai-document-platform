@@ -1,0 +1,224 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Bedrock AI Backend
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: bedrock-ai
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+  DynamoTableName:
+    Type: String
+    Default: bedrock-ai-documents
+  DocumentBucketName:
+    Type: String
+    Default: bedrock-ai-documents
+  UserPoolId:
+    Type: String
+  UserPoolClientId:
+    Type: String
+  BedrockModelId:
+    Type: String
+    Default: anthropic.claude-3-sonnet-20240229-v1:0
+
+Globals:
+  Function:
+    Runtime: nodejs18.x
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        NODE_ENV: !Ref Stage
+        DYNAMODB_TABLE: !Ref DynamoTableName
+        DOCUMENT_BUCKET: !Ref DocumentBucketName
+        USER_POOL_ID: !Ref UserPoolId
+        USER_POOL_CLIENT_ID: !Ref UserPoolClientId
+        BEDROCK_MODEL_ID: !Ref BedrockModelId
+
+Resources:
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: auth/
+      Handler: dist/index.handler
+      Environment:
+        Variables:
+          ENABLE_AI_ANALYSIS: true
+          ENABLE_DOCUMENT_UPLOAD: true
+          ENABLE_MULTI_TENANT: true
+      Policies:
+        - CognitoUserPoolPolicy:
+            UserPoolId: !Ref UserPoolId
+      Events:
+        Login:
+          Type: Api
+          Properties:
+            Path: /auth/login
+            Method: post
+        Profile:
+          Type: Api
+          Properties:
+            Path: /auth/profile
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateProfile:
+          Type: Api
+          Properties:
+            Path: /auth/profile
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  UsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: users/
+      Handler: dist/index.handler
+      Policies:
+        - CognitoUserPoolPolicy:
+            UserPoolId: !Ref UserPoolId
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoTableName
+      Events:
+        ListUsers:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        GetUser:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  DocumentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: documents/
+      Handler: dist/index.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoTableName
+        - S3CrudPolicy:
+            BucketName: !Ref DocumentBucketName
+      Events:
+        ListDocuments:
+          Type: Api
+          Properties:
+            Path: /documents
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        CreateDocument:
+          Type: Api
+          Properties:
+            Path: /documents
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+        GetDocument:
+          Type: Api
+          Properties:
+            Path: /documents/{documentId}
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateDocument:
+          Type: Api
+          Properties:
+            Path: /documents/{documentId}
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+        DeleteDocument:
+          Type: Api
+          Properties:
+            Path: /documents/{documentId}
+            Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  AiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ai-service/
+      Handler: dist/index.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoTableName
+        - BedrockInvokeModelPolicy:
+            ModelId: !Ref BedrockModelId
+      Events:
+        AnalyzeDocument:
+          Type: Api
+          Properties:
+            Path: /ai/analyze
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+        Chat:
+          Type: Api
+          Properties:
+            Path: /ai/chat
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  DataFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: data/
+      Handler: dist/index.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoTableName
+      Events:
+        GetTenantConfig:
+          Type: Api
+          Properties:
+            Path: /data/tenant-config
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateTenantConfig:
+          Type: Api
+          Properties:
+            Path: /data/tenant-config
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+Outputs:
+  AuthFunction:
+    Description: Auth Function ARN
+    Value: !GetAtt AuthFunction.Arn
+  UsersFunction:
+    Description: Users Function ARN
+    Value: !GetAtt UsersFunction.Arn
+  DocumentsFunction:
+    Description: Documents Function ARN
+    Value: !GetAtt DocumentsFunction.Arn
+  AiFunction:
+    Description: AI Function ARN
+    Value: !GetAtt AiFunction.Arn
+  DataFunction:
+    Description: Data Function ARN
+    Value: !GetAtt DataFunction.Arn 

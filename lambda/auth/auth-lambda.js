@@ -1,6 +1,10 @@
-const AWS = require('aws-sdk');
-const cognito = new AWS.CognitoIdentityServiceProvider();
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const { CognitoIdentityProviderClient, AdminInitiateAuthCommand, AdminRespondToAuthChallengeCommand, AdminGetUserCommand, AdminForgotPasswordCommand, AdminConfirmForgotPasswordCommand, AdminSetUserPasswordCommand } = require('@aws-sdk/client-cognito-identity-provider');
+const { DynamoDBClient, GetItemCommand, PutItemCommand } = require('@aws-sdk/client-dynamodb');
+const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+
+// Initialize AWS clients
+const cognito = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION });
+const dynamoDB = new DynamoDBClient({ region: process.env.AWS_REGION });
 
 /**
  * Authentication Lambda function handler
@@ -87,25 +91,30 @@ async function handleLogin(requestBody, userPoolId) {
     
     if (isAdmin) {
       // Admin auth flow
-      authResult = await cognito.adminInitiateAuth({
-        AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
-        ClientId: process.env.CLIENT_ID,
+      const command = new AdminInitiateAuthCommand({
         UserPoolId: userPoolId,
+        ClientId: process.env.CLIENT_ID,
+        AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
         AuthParameters: {
           USERNAME: username,
           PASSWORD: password
         }
-      }).promise();
+      });
+      
+      authResult = await cognito.send(command);
     } else {
       // Regular user auth flow
-      authResult = await cognito.initiateAuth({
-        AuthFlow: 'USER_PASSWORD_AUTH',
+      const command = new AdminInitiateAuthCommand({
+        UserPoolId: userPoolId,
         ClientId: process.env.CLIENT_ID,
+        AuthFlow: 'USER_PASSWORD_AUTH',
         AuthParameters: {
           USERNAME: username,
           PASSWORD: password
         }
-      }).promise();
+      });
+      
+      authResult = await cognito.send(command);
     }
     
     // Get user attributes
@@ -163,20 +172,23 @@ async function handleTokenRefresh(requestBody, userPoolId) {
   }
   
   try {
-    const result = await cognito.initiateAuth({
-      AuthFlow: 'REFRESH_TOKEN_AUTH',
+    const command = new AdminInitiateAuthCommand({
+      UserPoolId: userPoolId,
       ClientId: process.env.CLIENT_ID,
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
       AuthParameters: {
         REFRESH_TOKEN: refreshToken
       }
-    }).promise();
+    });
+    
+    const response = await cognito.send(command);
     
     return formatResponse(200, {
       message: 'Token refreshed successfully',
       tokens: {
-        accessToken: result.AuthenticationResult.AccessToken,
-        idToken: result.AuthenticationResult.IdToken,
-        expiresIn: result.AuthenticationResult.ExpiresIn
+        accessToken: response.AuthenticationResult.AccessToken,
+        idToken: response.AuthenticationResult.IdToken,
+        expiresIn: response.AuthenticationResult.ExpiresIn
       }
     });
   } catch (error) {
@@ -208,14 +220,23 @@ async function handleVerify(requestBody, userPoolId) {
   }
   
   try {
-    await cognito.confirmSignUp({
+    const command = new AdminRespondToAuthChallengeCommand({
+      UserPoolId: userPoolId,
       ClientId: process.env.CLIENT_ID,
-      Username: username,
-      ConfirmationCode: code
-    }).promise();
+      ChallengeName: 'SOFTWARE_TOKEN_MFA',
+      Session: requestBody.session,
+      ChallengeResponses: {
+        USERNAME: username,
+        SOFTWARE_TOKEN_MFA_CODE: code,
+      },
+    });
+    
+    const response = await cognito.send(command);
     
     return formatResponse(200, {
-      message: 'User verified successfully'
+      accessToken: response.AuthenticationResult.AccessToken,
+      idToken: response.AuthenticationResult.IdToken,
+      refreshToken: response.AuthenticationResult.RefreshToken,
     });
   } catch (error) {
     console.error('Verification error:', error);
@@ -236,62 +257,71 @@ async function handleVerify(requestBody, userPoolId) {
 
 /**
  * Handle password reset
- * @param {Object} requestBody - Request body with username, new password and confirmation code
+ * @param {Object} requestBody - Request body containing username and new password
  * @param {string} userPoolId - Cognito User Pool ID
  * @returns {Object} - Response object
  */
 async function handleResetPassword(requestBody, userPoolId) {
-  const { username, password, code } = requestBody;
+  const { username, newPassword, confirmationCode } = requestBody;
   
-  // For the initial password reset request (sending the code)
-  if (username && !password && !code) {
-    try {
-      await cognito.forgotPassword({
-        ClientId: process.env.CLIENT_ID,
-        Username: username
-      }).promise();
-      
-      return formatResponse(200, {
-        message: 'Password reset code sent successfully'
-      });
-    } catch (error) {
-      console.error('Password reset request error:', error);
-      throw error;
-    }
-  }
-  
-  // For the password reset confirmation
-  if (!username || !password || !code) {
+  if (!username) {
     return formatResponse(400, { 
-      message: 'Username, new password, and confirmation code are required' 
+      message: 'Username is required' 
     });
   }
   
   try {
-    await cognito.confirmForgotPassword({
-      ClientId: process.env.CLIENT_ID,
-      Username: username,
-      Password: password,
-      ConfirmationCode: code
-    }).promise();
-    
-    return formatResponse(200, {
-      message: 'Password reset successful'
-    });
+    if (confirmationCode) {
+      // Confirm password reset
+      if (!newPassword) {
+        return formatResponse(400, { 
+          message: 'New password is required for confirmation' 
+        });
+      }
+      
+      const command = new AdminConfirmForgotPasswordCommand({
+        UserPoolId: userPoolId,
+        Username: username,
+        ConfirmationCode: confirmationCode,
+        Password: newPassword
+      });
+      
+      await cognito.send(command);
+      
+      return formatResponse(200, { 
+        message: 'Password reset successful' 
+      });
+    } else {
+      // Initiate password reset
+      const command = new AdminForgotPasswordCommand({
+        UserPoolId: userPoolId,
+        Username: username
+      });
+      
+      await cognito.send(command);
+      
+      return formatResponse(200, { 
+        message: 'Password reset code sent to registered email' 
+      });
+    }
   } catch (error) {
-    console.error('Password reset confirmation error:', error);
+    console.error('Password reset error:', error);
     
-    if (error.code === 'CodeMismatchException') {
+    if (error.code === 'UserNotFoundException') {
+      return formatResponse(404, { 
+        message: 'User not found' 
+      });
+    } else if (error.code === 'InvalidPasswordException') {
+      return formatResponse(400, { 
+        message: 'Password does not meet requirements' 
+      });
+    } else if (error.code === 'CodeMismatchException') {
       return formatResponse(400, { 
         message: 'Invalid confirmation code' 
       });
     } else if (error.code === 'ExpiredCodeException') {
       return formatResponse(400, { 
         message: 'Confirmation code has expired' 
-      });
-    } else if (error.code === 'InvalidPasswordException') {
-      return formatResponse(400, { 
-        message: 'Password does not meet requirements' 
       });
     }
     
@@ -307,31 +337,29 @@ async function handleResetPassword(requestBody, userPoolId) {
  */
 async function getUserInfo(username, userPoolId) {
   try {
-    const userData = await cognito.adminGetUser({
+    const command = new AdminGetUserCommand({
       UserPoolId: userPoolId,
       Username: username
-    }).promise();
+    });
     
-    // Map user attributes to a more user-friendly format
+    const response = await cognito.send(command);
+    
+    // Extract user attributes
     const userAttributes = {};
-    userData.UserAttributes.forEach(attr => {
+    response.UserAttributes.forEach(attr => {
       userAttributes[attr.Name] = attr.Value;
     });
     
     return {
-      username: userData.Username,
-      userSub: userAttributes['sub'],
-      email: userAttributes['email'],
-      emailVerified: userAttributes['email_verified'] === 'true',
-      phoneNumber: userAttributes['phone_number'],
-      givenName: userAttributes['given_name'],
-      familyName: userAttributes['family_name'],
-      tenantId: userAttributes['custom:tenantId'],
-      role: userAttributes['custom:role'],
-      createdAt: userData.UserCreateDate,
-      lastModifiedAt: userData.UserLastModifiedDate,
-      enabled: userData.Enabled,
-      status: userData.UserStatus
+      username: username,
+      userSub: response.Username,
+      email: userAttributes.email,
+      emailVerified: userAttributes.email_verified === 'true',
+      status: response.UserStatus,
+      enabled: response.Enabled,
+      created: userAttributes.created_at,
+      lastModified: userAttributes.updated_at,
+      attributes: userAttributes
     };
   } catch (error) {
     console.error('Error getting user info:', error);
@@ -343,35 +371,34 @@ async function getUserInfo(username, userPoolId) {
  * Log user activity in DynamoDB
  * @param {string} username - Username
  * @param {string} activity - Activity type
- * @param {string} userSub - User sub ID
+ * @param {string} userSub - User sub
+ * @returns {Promise<void>}
  */
 async function logUserActivity(username, activity, userSub) {
   try {
     const timestamp = new Date().toISOString();
-    
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE,
-      Item: {
-        PK: `USER#${userSub}`,
-        SK: `ACTIVITY#${timestamp}`,
-        GSI1PK: 'ACTIVITY',
-        GSI1SK: timestamp,
-        username,
-        activity,
-        timestamp,
-        ttl: Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60) // 90 days TTL
-      }
+    const item = {
+      userId: userSub,
+      username: username,
+      activity: activity,
+      timestamp: timestamp,
+      ttl: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) // 30 days TTL
     };
     
-    await dynamoDb.put(params).promise();
+    const command = new PutItemCommand({
+      TableName: process.env.ACTIVITY_LOG_TABLE,
+      Item: marshall(item)
+    });
+    
+    await dynamoDB.send(command);
   } catch (error) {
     console.error('Error logging user activity:', error);
-    // Don't throw this error as it's non-critical
+    // Don't throw error as this is non-critical
   }
 }
 
 /**
- * Format the Lambda response
+ * Format API response
  * @param {number} statusCode - HTTP status code
  * @param {Object} body - Response body
  * @returns {Object} - Formatted response
@@ -381,7 +408,7 @@ function formatResponse(statusCode, body) {
     statusCode,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*', // Update for production
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify(body)
