@@ -1,6 +1,16 @@
-# BedrockAI
+# AWS Serverless Multi-Tier Application
 
 A serverless multi-tier application leveraging AWS Bedrock for AI-powered document analysis and processing.
+
+## System Architecture Diagram
+
+![System Architecture Diagram](screens/aws-serverless-architecture.svg)
+
+This diagram illustrates the complete serverless architecture including all the layers described above, their interactions, and data flows.
+
+## Architecture Overview
+
+The application is built using a multi-layered architecture:
 
 ## Overview
 
@@ -295,10 +305,109 @@ aws logs get-log-events \
 └── docs/                    # Additional documentation
 ```
 
-## Contributing
+### 1. User Dashboard (Web Interface)
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+![ Dashboard Web Interface](screens/dashboard-svg.svg)
 
-## License
+- **Pending Approvals**:
+  - 3 contracts awaiting legal review
+  - 2 reports pending executive approval
+  - 5 documents requiring compliance verification
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+- **Recent AI Analyses**:
+  - Contract risk assessment
+  - Market trend analysis
+  - Regulatory compliance check
+  - Competitive intelligence summary
+
+### 2. Document Viewer with AI Analysis
+
+![Document Viewer with AI Analysis](screens/document-viewer-svg.svg)
+
+The document viewer integrates intelligent analysis capabilities:
+
+- **Document Display**: Full contract text with section navigation
+- **AI Analysis Panel**:
+  ```
+  SUMMARY
+  This agreement outlines the terms of service between ACME Corporation 
+  and the client, including service level requirements, payment terms, 
+  confidentiality provisions, and termination conditions.
+  ```
+
+- **Key Terms**:
+  - Term: 24 months with auto-renewal
+  - Payment: Net 30 days
+  - Early termination fee: 20% of remaining contract value
+  - Confidentiality: 5-year NDA from termination
+
+- **Document Metadata**:
+  - Created: May 1, 2025
+  - Last modified: May 5, 2025
+  - Status: Pending approval
+  - Classification: Confidential
+
+- **Action Buttons**:
+  - Download
+  - Share
+  - Request approval
+  - Run AI analysis
+
+### 3. AI Assistant Chat Interface
+
+![AI Assistant Chat Interface](screens/ai-assistant-svg.svg)
+
+The AI assistant provides contextual document support:
+
+- **Conversation History**:
+  - Contract review
+  - Marketing strategy
+  - Competitor analysis
+  - Regulatory inquiries
+
+- **Chat Transcript Example**:
+  ```
+  User: What are the key terms in the ACME Services Agreement?
+  
+  AI: Based on the ACME Services Agreement, the key terms include:
+  - 24-month contract term with automatic renewal
+  - Net 30 payment terms with 1.5% late fee
+  - 99.9% uptime SLA with service credits
+  - 60-day termination notice required
+  
+  Would you like me to explain any of these terms in more detail?
+  ```
+
+- **Source Citations**:
+  - Reference to document section 3.2
+  - Link to full agreement
+  - Reference to previous version changes
+
+- **Document Summary Cards**:
+  - Quick reference cards for mentioned documents
+  - Highlighted relevant sections
+  - Direct links to document viewers
+
+### 4. Admin Dashboard (Multi-Tenant View)
+
+![Admin Dashboard Multi-Tenant View](screens/admin-dashboard-svg.svg)
+
+The admin interface provides system-wide management:
+
+- **System Health Metrics**:
+  - API response time: 87ms avg
+  - Function invocations: 12.5M daily
+  - Error rate: 0.02%
+  - Current system load: 42%
+
+- **Usage Analytics**:
+  - Peak usage periods
+  - Function execution distribution
+  - Storage growth trends
+  - Cost optimization recommendations
+
+- **Tenant Management**:
+  - Provisioning controls
+  - Quota management
+  - Authentication settings
+  - Compliance reporting
