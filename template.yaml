@@ -1420,17 +1420,17 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents/{id}
+            Path: /documents/{documentId}
             Method: get
         DeleteDocument:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents/{id}
+            Path: /documents/{documentId}
             Method: delete
         GetDocumentAnalysis:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents/{id}/analysis
+            Path: /documents/{documentId}/analysis
             Method: get
