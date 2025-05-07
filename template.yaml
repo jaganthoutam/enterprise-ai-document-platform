@@ -987,17 +987,6 @@ Resources:
           Properties:
             Topic: !Ref TenantCreationNotificationTopic
 
-  # Outputs
-  ApiEndpoint:
-    Description: API Gateway endpoint URL
-    Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
-  UserPoolId:
-    Description: Cognito User Pool ID
-    Value: !Ref CognitoUserPool
-  DocumentsBucketName:
-    Description: S3 Bucket for document storage
-    Value: !Ref DocumentsBucket
-
   DocumentAnalysisApiFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -1051,4 +1040,15 @@ Resources:
           Properties:
             RestApiId: !Ref ApiGateway
             Path: /documents/{id}/analysis
-            Method: get 
+            Method: get
+
+  # Outputs
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref CognitoUserPool
+  DocumentsBucketName:
+    Description: S3 Bucket for document storage
+    Value: !Ref DocumentsBucket 
