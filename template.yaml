@@ -498,36 +498,48 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /settings
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
         UpdateSettings:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
             Path: /settings
             Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
         GetNotificationPreferences:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
             Path: /settings/notification-preferences
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
         UpdateNotificationPreferences:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
             Path: /settings/notification-preferences
             Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
         GetSystemSettings:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
             Path: /settings/system
             Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
         UpdateSystemSettings:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
             Path: /settings/system
             Method: PUT
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   EtlEmbeddingFunction:
     Type: AWS::Serverless::Function
@@ -984,28 +996,40 @@ Resources:
           Properties:
             Path: /documents
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
         UploadDocument:
           Type: Api
           Properties:
             Path: /documents/upload
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
         AnalyzeDocument:
           Type: Api
           Properties:
             Path: /documents/analyze
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
         GetDocument:
           Type: Api
           Properties:
             Path: /documents/{id}
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
         DeleteDocument:
           Type: Api
           Properties:
             Path: /documents/{id}
             Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
         GetDocumentAnalysis:
           Type: Api
           Properties:
             Path: /documents/{id}/analysis
-            Method: get 
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer 
