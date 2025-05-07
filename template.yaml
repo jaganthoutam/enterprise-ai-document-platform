@@ -408,51 +408,71 @@ Resources:
           Properties:
             Path: /notifications
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
         MarkNotificationAsRead:
           Type: Api
           Properties:
             Path: /notifications/{id}/read
             Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
         DeleteNotification:
           Type: Api
           Properties:
             Path: /notifications/{id}
             Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
         MarkAllNotificationsAsRead:
           Type: Api
           Properties:
             Path: /notifications/read-all
             Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
         ClearAllNotifications:
           Type: Api
           Properties:
             Path: /notifications/clear-all
             Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
         GetUnreadNotificationCount:
           Type: Api
           Properties:
             Path: /notifications/unread-count
             Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
         CreateNotification:
           Type: Api
           Properties:
             Path: /notifications/create
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
         CreateNotificationForCurrentUser:
           Type: Api
           Properties:
             Path: /notifications/create-for-current-user
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
         CreateNotificationForAllUsers:
           Type: Api
           Properties:
             Path: /notifications/create-for-all-users
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
         CreateNotificationForUsersWithRole:
           Type: Api
           Properties:
             Path: /notifications/create-for-users-with-role
             Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
 
   SettingsApiFunction:
     Type: AWS::Serverless::Function
