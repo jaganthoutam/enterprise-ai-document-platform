@@ -116,6 +116,152 @@ Resources:
     Properties:
       Domain: vpc
 
+  # Route Tables
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-public-rt
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+    DependsOn: VPCGatewayAttachment
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-private-rt-1
+
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway1
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable1
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-private-rt-2
+
+  PrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway2
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable2
+
+  # VPC Endpoints
+  S3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref VPC
+      ServiceName: !Sub com.amazonaws.${AWS::Region}.s3
+      RouteTableIds:
+        - !Ref PrivateRouteTable1
+        - !Ref PrivateRouteTable2
+      VpcEndpointType: Gateway
+
+  SecretsManagerEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref VPC
+      ServiceName: !Sub com.amazonaws.${AWS::Region}.secretsmanager
+      VpcEndpointType: Interface
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      SecurityGroupIds:
+        - !Ref LambdaSecurityGroup
+
+  # CloudWatch Log Groups
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}
+      RetentionInDays: 30
+
+  # IAM Roles
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-lambda-execution-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+
+  # S3 Bucket Policies
+  DocumentsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DocumentsBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: EnforceSSLOnly
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !Sub arn:aws:s3:::${DocumentsBucket}
+              - !Sub arn:aws:s3:::${DocumentsBucket}/*
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+          - Sid: EnforceEncryption
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !Sub arn:aws:s3:::${DocumentsBucket}
+              - !Sub arn:aws:s3:::${DocumentsBucket}/*
+            Condition:
+              StringNotEquals:
+                s3:x-amz-server-side-encryption: aws:kms
+
   # Secrets Manager
   SecretsManagerSecret:
     Type: AWS::SecretsManager::Secret
@@ -274,6 +420,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 300
       MemorySize: 1024
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -322,6 +469,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 512
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -362,6 +510,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 512
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -419,6 +568,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 512
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -472,6 +622,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 512
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -525,6 +676,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NotificationsTable
@@ -604,6 +756,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SettingsTable
@@ -671,6 +824,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 60
       MemorySize: 512
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -703,6 +857,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 10
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -735,6 +890,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 10
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -767,6 +923,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 10
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -799,6 +956,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 10
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       VpcConfig:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
@@ -1031,6 +1189,49 @@ Resources:
         - Key: Name
           Value: !Sub ${AWS::StackName}-security-hub
 
+  # KMS Key for encryption
+  KmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: KMS key for DocumentAI application encryption
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: kms:*
+            Resource: '*'
+          - Sid: Allow CloudTrail to encrypt logs
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: kms:GenerateDataKey*
+            Resource: '*'
+          - Sid: Allow CloudWatch Logs to encrypt logs
+            Effect: Allow
+            Principal:
+              Service: logs.amazonaws.com
+            Action: kms:GenerateDataKey*
+            Resource: '*'
+          - Sid: Allow S3 to encrypt objects
+            Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action: kms:GenerateDataKey*
+            Resource: '*'
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-kms-key
+
+  KmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub alias/${AWS::StackName}-key
+      TargetKeyId: !Ref KmsKey
+
   # SNS Topics for notifications
   DocumentAnalysisNotificationTopic:
     Type: AWS::SNS::Topic
@@ -1065,6 +1266,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NotificationsTable
@@ -1085,6 +1287,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NotificationsTable
@@ -1108,6 +1311,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NotificationsTable
@@ -1128,6 +1332,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NotificationsTable
@@ -1148,6 +1353,7 @@ Resources:
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DocumentsTable
