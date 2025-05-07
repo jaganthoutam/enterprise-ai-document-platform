@@ -170,8 +170,18 @@ Resources:
             TableName: !Ref AnalysisTable
         - S3CrudPolicy:
             BucketName: !Ref DocumentsBucket
-        - BedrockInvokeModelPolicy: {}
-        - TextractFullAccessPolicy: {}
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - textract:*
+              Resource: '*'
       Environment:
         Variables:
           DOCUMENTS_TABLE: !Ref DocumentsTable
@@ -206,7 +216,12 @@ Resources:
             TableName: !Ref ChatHistoryTable
         - DynamoDBCrudPolicy:
             TableName: !Ref AnalysisTable
-        - BedrockInvokeModelPolicy: {}
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: '*'
       Environment:
         Variables:
           CHAT_HISTORY_TABLE: !Ref ChatHistoryTable
@@ -560,7 +575,12 @@ Resources:
             BucketName: !Ref DocumentsBucket
         - DynamoDBCrudPolicy:
             TableName: !Ref DocumentsTable
-        - BedrockInvokeModelPolicy: {}
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: '*'
       Environment:
         Variables:
           DOCUMENTS_TABLE: !Ref DocumentsTable
@@ -583,7 +603,12 @@ Resources:
           - !Ref PrivateSubnet1
           - !Ref PrivateSubnet2
       Policies:
-        - BedrockInvokeModelPolicy: {}
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: '*'
       Environment:
         Variables:
           SECRETS_ARN: !Ref SecretsManagerSecret
@@ -610,7 +635,12 @@ Resources:
           - !Ref PrivateSubnet1
           - !Ref PrivateSubnet2
       Policies:
-        - BedrockInvokeModelPolicy: {}
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: '*'
       Environment:
         Variables:
           SECRETS_ARN: !Ref SecretsManagerSecret
@@ -637,7 +667,12 @@ Resources:
           - !Ref PrivateSubnet1
           - !Ref PrivateSubnet2
       Policies:
-        - BedrockInvokeModelPolicy: {}
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: '*'
       Environment:
         Variables:
           SECRETS_ARN: !Ref SecretsManagerSecret
@@ -994,42 +1029,36 @@ Resources:
         GetDocuments:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /documents
             Method: get
-            Auth:
-              Authorizer: CognitoAuthorizer
         UploadDocument:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /documents/upload
             Method: post
-            Auth:
-              Authorizer: CognitoAuthorizer
         AnalyzeDocument:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /documents/analyze
             Method: post
-            Auth:
-              Authorizer: CognitoAuthorizer
         GetDocument:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /documents/{id}
             Method: get
-            Auth:
-              Authorizer: CognitoAuthorizer
         DeleteDocument:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /documents/{id}
             Method: delete
-            Auth:
-              Authorizer: CognitoAuthorizer
         GetDocumentAnalysis:
           Type: Api
           Properties:
+            RestApiId: !Ref ApiGateway
             Path: /documents/{id}/analysis
-            Method: get
-            Auth:
-              Authorizer: CognitoAuthorizer 
+            Method: get 
