@@ -1130,6 +1130,7 @@ Resources:
     Properties:
       TrailName: !Sub ${AWS::StackName}-trail
       S3BucketName: !Ref CloudTrailBucket
+      IsLogging: true 
       IncludeGlobalServiceEvents: true
       IsMultiRegionTrail: true
       EnableLogFileValidation: true
