@@ -8,20 +8,20 @@
     "GSI2SK": "contract",
     "id": "doc_001",
     "userId": "usr_01",
-    "title": "ACME Corp Services Agreement",
+    "title": "THOUTAM Corp Services Agreement",
     "description": "Master services agreement for software development services",
     "docType": "contract",
-    "tags": ["legal", "agreement", "services", "acme"],
+    "tags": ["legal", "agreement", "services", "THOUTAM"],
     "status": "active",
     "createdAt": "2025-04-15T09:30:00Z",
     "updatedAt": "2025-04-15T09:30:00Z",
-    "s3Key": "uploads/usr_01/2025-04-15T09:30:00Z-acme-services-agreement.pdf",
+    "s3Key": "uploads/usr_01/2025-04-15T09:30:00Z-THOUTAM-services-agreement.pdf",
     "fileType": "application/pdf",
     "fileSize": 2456789,
     "access": "private",
     "version": 1,
     "metadata": {
-      "partyA": "ACME Corporation",
+      "partyA": "THOUTAM Corporation",
       "partyB": "GlobalTech Solutions",
       "effectiveDate": "2025-05-01",
       "expirationDate": "2026-05-01"
@@ -294,7 +294,7 @@
     "access": "restricted",
     "version": 1,
     "metadata": {
-      "partyA": "ACME Corporation",
+      "partyA": "THOUTAM Corporation",
       "partyB": "TechSupplies Inc",
       "effectiveDate": "2025-05-15",
       "expirationDate": "2026-05-15"

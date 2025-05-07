@@ -7,8 +7,8 @@
       "primaryColor": "#0052CC",
       "secondaryColor": "#FF5630",
       "accentColor": "#36B37E",
-      "logoUrl": "https://storage.example.com/logos/acme-logo.png",
-      "favicon": "https://storage.example.com/logos/acme-favicon.ico",
+      "logoUrl": "https://storage.example.com/logos/THOUTAM-logo.png",
+      "favicon": "https://storage.example.com/logos/THOUTAM-favicon.ico",
       "fontFamily": "Roboto, sans-serif",
       "customCss": ".header { border-bottom: 2px solid #0052CC; }",
       "emailTemplate": "template_enterprise_01"
@@ -58,20 +58,20 @@
       "sso": {
         "enabled": true,
         "provider": "okta",
-        "entityId": "https://sso.acmecorp.com/saml2/service-provider",
-        "metadataUrl": "https://acmecorp.okta.com/app/exk6f9240lSxUcOeC4x7/sso/saml/metadata",
-        "assertionConsumerService": "https://api.example.com/auth/saml/acmecorp",
+        "entityId": "https://sso.THOUTAMcorp.com/saml2/service-provider",
+        "metadataUrl": "https://THOUTAMcorp.okta.com/app/exk6f9240lSxUcOeC4x7/sso/saml/metadata",
+        "assertionConsumerService": "https://api.example.com/auth/saml/THOUTAMcorp",
         "nameIdFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
       },
       "email": {
         "provider": "custom",
-        "smtpServer": "smtp.acmecorp.com",
+        "smtpServer": "smtp.THOUTAMcorp.com",
         "smtpPort": 587,
-        "smtpUsername": "notifications@acmecorp.com",
+        "smtpUsername": "notifications@THOUTAMcorp.com",
         "smtpPasswordSecretId": "secret/tenant_01/smtp_password",
-        "fromEmail": "no-reply@acmecorp.com",
-        "fromName": "ACME Document System",
-        "replyToEmail": "support@acmecorp.com"
+        "fromEmail": "no-reply@THOUTAMcorp.com",
+        "fromName": "THOUTAM Document System",
+        "replyToEmail": "support@THOUTAMcorp.com"
       },
       "analytics": {
         "googleAnalytics": {
@@ -86,7 +86,7 @@
       "crm": {
         "provider": "salesforce",
         "enabled": true,
-        "instanceUrl": "https://acmecorp.my.salesforce.com",
+        "instanceUrl": "https://THOUTAMcorp.my.salesforce.com",
         "apiVersion": "v56.0",
         "secretsPath": "secret/tenant_01/salesforce"
       },

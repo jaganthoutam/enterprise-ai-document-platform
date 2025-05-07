@@ -14,8 +14,8 @@
   },
   {
     "id": "usr_02",
-    "username": "john.smith@acmecorp.com",
-    "email": "john.smith@acmecorp.com",
+    "username": "john.smith@THOUTAMcorp.com",
+    "email": "john.smith@THOUTAMcorp.com",
     "firstName": "John",
     "lastName": "Smith",
     "role": "power_user",
@@ -27,8 +27,8 @@
   },
   {
     "id": "usr_03",
-    "username": "sarah.johnson@acmecorp.com",
-    "email": "sarah.johnson@acmecorp.com",
+    "username": "sarah.johnson@THOUTAMcorp.com",
+    "email": "sarah.johnson@THOUTAMcorp.com",
     "firstName": "Sarah",
     "lastName": "Johnson",
     "role": "standard_user",
@@ -92,8 +92,8 @@
   },
   {
     "id": "usr_08",
-    "username": "robert.taylor@acmecorp.com",
-    "email": "robert.taylor@acmecorp.com",
+    "username": "robert.taylor@THOUTAMcorp.com",
+    "email": "robert.taylor@THOUTAMcorp.com",
     "firstName": "Robert",
     "lastName": "Taylor",
     "role": "standard_user",

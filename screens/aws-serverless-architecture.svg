@@ -158,5 +158,5 @@
   </defs>
 
   <!-- Footer -->
-  <text x="600" y="750" text-anchor="middle" font-family="Arial" font-size="14">github.com/ACME/aws-serverless-architecture</text>
+  <text x="600" y="750" text-anchor="middle" font-family="Arial" font-size="14">github.com/THOUTAM/aws-serverless-architecture</text>
 </svg>

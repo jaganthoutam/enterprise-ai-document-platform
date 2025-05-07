@@ -3,13 +3,13 @@
     "PK": "TENANT#tenant_01",
     "SK": "METADATA",
     "id": "tenant_01",
-    "name": "ACME Corporation",
+    "name": "THOUTAM Corporation",
     "industry": "Technology",
     "tier": "enterprise",
     "status": "active",
     "createdAt": "2025-03-15T10:00:00Z",
     "subscriptionEnd": "2026-03-15T10:00:00Z",
-    "contactEmail": "admin@acmecorp.com",
+    "contactEmail": "admin@THOUTAMcorp.com",
     "contactPhone": "+1-555-123-4567",
     "address": {
       "street": "123 Tech Boulevard",
@@ -44,7 +44,7 @@
       "amount": 5000,
       "frequency": "monthly",
       "paymentMethod": "invoice",
-      "billingContact": "finance@acmecorp.com"
+      "billingContact": "finance@THOUTAMcorp.com"
     }
   },
   {
