@@ -1,4 +1,22 @@
-# Installation & Deployment Guide
+# Comprehensive Deployment Guide for Bedrock AI Document Analysis Application
+
+This guide is based on the project's React frontend, AWS serverless architecture (including API Gateway, Lambda, DynamoDB, and S3), as identified in files like package.json, template.yaml, and backend scripts.
+
+# Table of Contents
+- [Architecture Overview](#architecture-overview)
+- [Prerequisites](#prerequisites)
+- [Detailed Deployment Steps](#detailed-deployment-steps)
+- [Troubleshooting Common Issues](#troubleshooting-common-issues)
+- [Best Practices for Deployment](#best-practices-for-deployment)
+- [Resource References](#resource-references)
+- [Final Verification](#final-verification)
+
+## Architecture Overview
+- **Frontend**: React app with Material-UI for UI components, handling authentication, dashboards, and document analysis.
+- **Backend**: AWS Lambda functions for document processing, API Gateway for endpoints, DynamoDB for data storage, and S3 for file handling.
+- **Key Files**: package.json (dependencies), template.yaml (AWS resources), and backend Lambda scripts.
+
+---
 
 ## Prerequisites
 - Node.js (v16+ recommended)
@@ -133,4 +151,83 @@ To load sample data into the application, follow these steps:
 
 ---
 
-**For any questions or issues, please refer to the project README or contact the maintainers.** 
+## Post-Deployment Appearance
+After deploying your application (e.g., via AWS Amplify), the app will feature a modern React-based interface, including:
+- A secure login page for user authentication.
+- A main dashboard with document analysis tools like summaries, key terms, and risk assessments.
+- Easy navigation for settings, notifications, and admin features.
+- Responsive Material-UI components for a professional look with cards, buttons, and forms.
+The app will be hosted on a URL like `your-app-name.amplifyapp.com` and adapt to various devices.
+
+---
+
+## Advanced Deployment Steps
+### Using AWS Amplify for Full Deployment:
+1. Install Amplify CLI: `npm install -g @aws-amplify/cli`.
+2. Initialize: `amplify init` and follow prompts.
+3. Add backend: `amplify add api` and `amplify add function` for Lambda.
+4. Push changes: `amplify push`.
+
+### Post-Deployment Verification
+- Access the app at your hosted URL (e.g., `your-app-name.amplifyapp.com`).
+- Verify AWS resources in the console (e.g., check DynamoDB tables for sample data).
+
+**Note**: Ensure all environment variables are set for production.
+
+---
+
+## Detailed Deployment Steps
+### Step 1: Prerequisites Verification
+- Ensure AWS CLI is configured: Run `aws configure` to set up your credentials.
+- Install necessary tools: `npm install -g @aws-amplify/cli aws-cdk` for Amplify and CDK support.
+
+### Step 2: Backend Deployment with AWS SAM
+- Build your SAM template: `sam build` in the backend directory.
+- Deploy: `sam deploy --guided` and input parameters like stack name and region.
+- Verify resources: Check AWS Console for API Gateway endpoints, Lambda functions, and DynamoDB tables.
+
+### Step 3: Frontend Deployment with Amplify
+- Initialize Amplify: `amplify init`.
+- Add services: `amplify add hosting` and `amplify add api`.
+- Publish: `amplify publish` to deploy to a global CDN.
+
+### Step 4: Environment Variables and Security
+- Set up .env file with keys like REACT_APP_API_ENDPOINT.
+- Configure IAM roles for Lambda to access S3 and DynamoDB.
+
+### Step 5: Testing and Verification
+- Test endpoints: Use tools like Postman to call API Gateway.
+- Monitor: Use AWS CloudWatch for logs and errors.
+
+## Troubleshooting Common Issues
+- **API Gateway Errors**: Check CloudWatch logs for Lambda invocation errors; ensure IAM roles have the necessary permissions for S3 and DynamoDB.
+- **Deployment Failures**: If `amplify publish` fails, verify your AWS credentials and region settings.
+- **Environment Variable Issues**: Use `echo $ENV_VAR` to confirm variables are set; update .env file and rebuild.
+
+### Step 6: Scaling and Monitoring
+- Set up auto-scaling for Lambda functions via AWS Console.
+- Use CloudWatch for monitoring metrics like invocation counts and errors.
+- Enable alarms for high error rates.
+
+### Step 7: Custom Domain Setup
+- In Amplify Console, add a custom domain and configure SSL for secure access.
+
+---
+
+## Best Practices for Deployment
+- Use environment-specific configurations (e.g., separate .env files for dev and prod).
+- Automate deployments with CI/CD tools like GitHub Actions or AWS CodePipeline.
+- Regularly update dependencies in package.json to avoid vulnerabilities.
+
+## Resource References
+- AWS Documentation: Refer to AWS Amplify and SAM guides for detailed API references.
+- Project Files: Cross-reference with template.yaml for resource definitions and backend/documentAnalysis.js for Lambda specifics.
+
+### Final Verification
+- Run smoke tests: Access the app and perform basic operations like login and document upload.
+- Clean up: Remove any unused resources in AWS to optimize costs.
+
+**For any questions or issues, please refer to the project README or contact the maintainers.**
+
+## Summary
+This guide covers the full deployment process for your Bedrock AI application, from prerequisites to verification, based on React frontend and AWS backend components. Refer to this for any future deployments.
