@@ -1,0 +1,991 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless multi-tier application leveraging AWS Bedrock for AI-powered document analysis
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+
+Resources:
+  # API Gateway
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Environment
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+
+  # Cognito User Pool
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub ${AWS::StackName}-user-pool
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+
+  # DynamoDB Tables
+  DocumentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-documents
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  AnalysisTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-analysis
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: documentId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: documentId
+          KeyType: HASH
+
+  ChatHistoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-chat-history
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  TenantsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-tenants
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  SettingsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-settings
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+
+  NotificationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-notifications
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: RANGE
+
+  # S3 Bucket
+  DocumentsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-documents-${AWS::AccountId}
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - "*"
+            MaxAge: 3000
+
+  # Lambda Functions
+  DocumentAnalysisFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: documentAnalysis.handler
+      Runtime: nodejs18.x
+      Timeout: 300
+      MemorySize: 1024
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DocumentsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AnalysisTable
+        - S3CrudPolicy:
+            BucketName: !Ref DocumentsBucket
+        - BedrockInvokeModelPolicy: {}
+        - TextractFullAccessPolicy: {}
+      Environment:
+        Variables:
+          DOCUMENTS_TABLE: !Ref DocumentsTable
+          ANALYSIS_TABLE: !Ref AnalysisTable
+          BUCKET_NAME: !Ref DocumentsBucket
+          OPENSEARCH_ENDPOINT: !GetAtt OpenSearchDomain.DomainEndpoint
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        DocumentAnalysis:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /documents/analyze
+            Method: POST
+
+  ChatFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: chat.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChatHistoryTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AnalysisTable
+        - BedrockInvokeModelPolicy: {}
+      Environment:
+        Variables:
+          CHAT_HISTORY_TABLE: !Ref ChatHistoryTable
+          ANALYSIS_TABLE: !Ref AnalysisTable
+          DOCUMENTS_TABLE: !Ref DocumentsTable
+          OPENSEARCH_ENDPOINT: !GetAtt OpenSearchDomain.DomainEndpoint
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        Chat:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /chat
+            Method: POST
+
+  DocumentApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: documentApi.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DocumentsTable
+        - S3CrudPolicy:
+            BucketName: !Ref DocumentsBucket
+      Environment:
+        Variables:
+          DOCUMENTS_TABLE: !Ref DocumentsTable
+          BUCKET_NAME: !Ref DocumentsBucket
+          OPENSEARCH_ENDPOINT: !GetAtt OpenSearchDomain.DomainEndpoint
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        GetDocuments:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /documents
+            Method: GET
+        CreateDocument:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /documents
+            Method: POST
+        GetDocument:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /documents/{documentId}
+            Method: GET
+        DeleteDocument:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /documents/{documentId}
+            Method: DELETE
+        DownloadDocument:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /documents/{documentId}/download
+            Method: GET
+
+  UserApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: userApi.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref UsersTable
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        GetUsers:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /users
+            Method: GET
+        CreateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /users
+            Method: POST
+        GetUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /users/{userId}
+            Method: GET
+        UpdateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /users/{userId}
+            Method: PUT
+        DeleteUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /users/{userId}
+            Method: DELETE
+
+  TenantApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: tenantApi.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TenantsTable
+      Environment:
+        Variables:
+          TENANTS_TABLE: !Ref TenantsTable
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        GetTenants:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /tenants
+            Method: GET
+        CreateTenant:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /tenants
+            Method: POST
+        GetTenant:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /tenants/{tenantId}
+            Method: GET
+        UpdateTenant:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /tenants/{tenantId}
+            Method: PUT
+        DeleteTenant:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /tenants/{tenantId}
+            Method: DELETE
+
+  NotificationsApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: notificationsApi.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NotificationsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+        Variables:
+          NOTIFICATIONS_TABLE: !Ref NotificationsTable
+          USERS_TABLE: !Ref UsersTable
+      Events:
+        GetNotifications:
+          Type: Api
+          Properties:
+            Path: /notifications
+            Method: get
+        MarkNotificationAsRead:
+          Type: Api
+          Properties:
+            Path: /notifications/{id}/read
+            Method: put
+        DeleteNotification:
+          Type: Api
+          Properties:
+            Path: /notifications/{id}
+            Method: delete
+        MarkAllNotificationsAsRead:
+          Type: Api
+          Properties:
+            Path: /notifications/read-all
+            Method: put
+        ClearAllNotifications:
+          Type: Api
+          Properties:
+            Path: /notifications/clear-all
+            Method: delete
+        GetUnreadNotificationCount:
+          Type: Api
+          Properties:
+            Path: /notifications/unread-count
+            Method: get
+        CreateNotification:
+          Type: Api
+          Properties:
+            Path: /notifications/create
+            Method: post
+        CreateNotificationForCurrentUser:
+          Type: Api
+          Properties:
+            Path: /notifications/create-for-current-user
+            Method: post
+        CreateNotificationForAllUsers:
+          Type: Api
+          Properties:
+            Path: /notifications/create-for-all-users
+            Method: post
+        CreateNotificationForUsersWithRole:
+          Type: Api
+          Properties:
+            Path: /notifications/create-for-users-with-role
+            Method: post
+
+  SettingsApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: settingsApi.getSettings
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SettingsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+        Variables:
+          SETTINGS_TABLE: !Ref SettingsTable
+          USERS_TABLE: !Ref UsersTable
+      Events:
+        GetSettings:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /settings
+            Method: GET
+        UpdateSettings:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /settings
+            Method: PUT
+        GetNotificationPreferences:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /settings/notification-preferences
+            Method: GET
+        UpdateNotificationPreferences:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /settings/notification-preferences
+            Method: PUT
+        GetSystemSettings:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /settings/system
+            Method: GET
+        UpdateSystemSettings:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /settings/system
+            Method: PUT
+
+  EtlEmbeddingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: etlEmbedding.handler
+      Runtime: nodejs18.x
+      Timeout: 60
+      MemorySize: 512
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref DocumentsBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DocumentsTable
+        - BedrockInvokeModelPolicy: {}
+      Environment:
+        Variables:
+          DOCUMENTS_TABLE: !Ref DocumentsTable
+          BUCKET_NAME: !Ref DocumentsBucket
+          OPENSEARCH_ENDPOINT: !GetAtt OpenSearchDomain.DomainEndpoint
+          SECRETS_ARN: !Ref SecretsManagerSecret
+
+  BedrockKnowledgeBaseApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: bedrockKnowledgeBaseApi.handler
+      Runtime: nodejs18.x
+      Timeout: 10
+      MemorySize: 256
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - BedrockInvokeModelPolicy: {}
+      Environment:
+        Variables:
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        BedrockKnowledgeBase:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /bedrock/knowledge-base
+            Method: ANY
+
+  BedrockAgentApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: bedrockAgentApi.handler
+      Runtime: nodejs18.x
+      Timeout: 10
+      MemorySize: 256
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - BedrockInvokeModelPolicy: {}
+      Environment:
+        Variables:
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        BedrockAgent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /bedrock/agent
+            Method: ANY
+
+  BedrockGuardrailApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: bedrockGuardrailApi.handler
+      Runtime: nodejs18.x
+      Timeout: 10
+      MemorySize: 256
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - BedrockInvokeModelPolicy: {}
+      Environment:
+        Variables:
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        BedrockGuardrail:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /bedrock/guardrail
+            Method: ANY
+
+  OpenSearchApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: opensearchApi.handler
+      Runtime: nodejs18.x
+      Timeout: 10
+      MemorySize: 256
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - es:ESHttp*
+              Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${AWS::StackName}-opensearch/*
+      Environment:
+        Variables:
+          OPENSEARCH_ENDPOINT: !GetAtt OpenSearchDomain.DomainEndpoint
+          SECRETS_ARN: !Ref SecretsManagerSecret
+      Events:
+        OpenSearch:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /search
+            Method: ANY
+
+  # Lambda Security Group
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Lambda functions
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # CloudWatch Alarms
+  LambdaErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-lambda-error-alarm
+      AlarmDescription: Alarm for Lambda function errors
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref DocumentAnalysisFunction
+      AlarmActions:
+        - !Ref AlarmNotificationTopic
+
+  LambdaThrottleAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-lambda-throttle-alarm
+      AlarmDescription: Alarm for Lambda function throttling
+      MetricName: Throttles
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref DocumentAnalysisFunction
+      AlarmActions:
+        - !Ref AlarmNotificationTopic
+
+  ApiGatewayErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-apigateway-error-alarm
+      AlarmDescription: Alarm for API Gateway errors
+      MetricName: 5XXError
+      Namespace: AWS/ApiGateway
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ApiName
+          Value: !Ref ApiGateway
+      AlarmActions:
+        - !Ref AlarmNotificationTopic
+
+  OpenSearchClusterStatusAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-opensearch-cluster-status-alarm
+      AlarmDescription: Alarm for OpenSearch cluster status
+      MetricName: ClusterStatus.red
+      Namespace: AWS/ES
+      Statistic: Maximum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DomainName
+          Value: !Ref OpenSearchDomain
+        - Name: ClientId
+          Value: !Ref AWS::AccountId
+      AlarmActions:
+        - !Ref AlarmNotificationTopic
+
+  # SNS Topic for alarms
+  AlarmNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub ${AWS::StackName}-alarm-notifications
+      TopicName: !Sub ${AWS::StackName}-alarm-notifications
+
+  # CloudTrail for API activity tracking
+  CloudTrail:
+    Type: AWS::CloudTrail::Trail
+    Properties:
+      TrailName: !Sub ${AWS::StackName}-trail
+      S3BucketName: !Ref CloudTrailBucket
+      IncludeGlobalServiceEvents: true
+      IsMultiRegionTrail: true
+      EnableLogFileValidation: true
+      CloudWatchLogsLogGroupArn: !GetAtt CloudTrailLogGroup.Arn
+      CloudWatchLogsRoleArn: !GetAtt CloudTrailLogsRole.Arn
+
+  CloudTrailBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-cloudtrail-${AWS::AccountId}
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+              KMSMasterKeyID: !Ref KmsKey
+
+  CloudTrailLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/cloudtrail/${AWS::StackName}
+      RetentionInDays: 30
+
+  CloudTrailLogsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-cloudtrail-logs-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/CloudTrailServiceRole
+
+  # X-Ray for distributed tracing
+  XRayServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-xray-service-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: xray.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
+
+  # Security Hub for security posture management
+  SecurityHub:
+    Type: AWS::SecurityHub::Hub
+    Properties:
+      EnableDefaultStandards: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-security-hub
+
+  # SNS Topics for notifications
+  DocumentAnalysisNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Document Analysis Notifications
+      TopicName: !Sub ${AWS::StackName}-document-analysis-notifications
+
+  SystemMaintenanceNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: System Maintenance Notifications
+      TopicName: !Sub ${AWS::StackName}-system-maintenance-notifications
+
+  UserRoleChangeNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: User Role Change Notifications
+      TopicName: !Sub ${AWS::StackName}-user-role-change-notifications
+
+  TenantCreationNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Tenant Creation Notifications
+      TopicName: !Sub ${AWS::StackName}-tenant-creation-notifications
+
+  # Notification Handler Lambda Functions
+  DocumentAnalysisNotificationHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: notificationHandler.processDocumentAnalysisNotification
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NotificationsTable
+      Environment:
+        Variables:
+          NOTIFICATIONS_TABLE: !Ref NotificationsTable
+      Events:
+        DocumentAnalysisNotification:
+          Type: SNS
+          Properties:
+            Topic: !Ref DocumentAnalysisNotificationTopic
+
+  SystemMaintenanceNotificationHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: notificationHandler.processSystemMaintenanceNotification
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NotificationsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+        Variables:
+          NOTIFICATIONS_TABLE: !Ref NotificationsTable
+          USERS_TABLE: !Ref UsersTable
+      Events:
+        SystemMaintenanceNotification:
+          Type: SNS
+          Properties:
+            Topic: !Ref SystemMaintenanceNotificationTopic
+
+  UserRoleChangeNotificationHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: notificationHandler.processUserRoleChangeNotification
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NotificationsTable
+      Environment:
+        Variables:
+          NOTIFICATIONS_TABLE: !Ref NotificationsTable
+      Events:
+        UserRoleChangeNotification:
+          Type: SNS
+          Properties:
+            Topic: !Ref UserRoleChangeNotificationTopic
+
+  TenantCreationNotificationHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: notificationHandler.processTenantCreationNotification
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref NotificationsTable
+      Environment:
+        Variables:
+          NOTIFICATIONS_TABLE: !Ref NotificationsTable
+      Events:
+        TenantCreationNotification:
+          Type: SNS
+          Properties:
+            Topic: !Ref TenantCreationNotificationTopic
+
+  # Outputs
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref CognitoUserPool
+  DocumentsBucketName:
+    Description: S3 Bucket for document storage
+    Value: !Ref DocumentsBucket
+
+  DocumentAnalysisApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/lambda/
+      Handler: documentAnalysisApi.handler
+      Runtime: nodejs18.x
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DocumentsTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt DocumentAnalysisNotificationTopic.TopicName
+      Environment:
+        Variables:
+          DOCUMENTS_TABLE: !Ref DocumentsTable
+          DOCUMENT_ANALYSIS_NOTIFICATION_TOPIC_ARN: !Ref DocumentAnalysisNotificationTopic
+      Events:
+        GetDocuments:
+          Type: Api
+          Properties:
+            Path: /documents
+            Method: get
+        UploadDocument:
+          Type: Api
+          Properties:
+            Path: /documents/upload
+            Method: post
+        AnalyzeDocument:
+          Type: Api
+          Properties:
+            Path: /documents/analyze
+            Method: post
+        GetDocument:
+          Type: Api
+          Properties:
+            Path: /documents/{id}
+            Method: get
+        DeleteDocument:
+          Type: Api
+          Properties:
+            Path: /documents/{id}
+            Method: delete
+        GetDocumentAnalysis:
+          Type: Api
+          Properties:
+            Path: /documents/{id}/analysis
+            Method: get 

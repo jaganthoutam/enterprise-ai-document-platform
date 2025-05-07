@@ -10,7 +10,7 @@
     "documentId": "doc_001",
     "userId": "usr_01",
     "analysisType": "summary",
-    "result": "This Master Services Agreement between ACME Corporation and GlobalTech Solutions outlines the terms for software development services. Key provisions include: 1) Initial term of one year with automatic renewal; 2) Payment terms of net-30 with detailed invoicing requirements; 3) Confidentiality obligations for both parties; 4) Intellectual property rights assignment to ACME for all deliverables; 5) Limited warranty and liability caps. The agreement includes standard clauses for termination, force majeure, and dispute resolution through arbitration.",
+    "result": "This Master Services Agreement between THOUTAM Corporation and GlobalTech Solutions outlines the terms for software development services. Key provisions include: 1) Initial term of one year with automatic renewal; 2) Payment terms of net-30 with detailed invoicing requirements; 3) Confidentiality obligations for both parties; 4) Intellectual property rights assignment to THOUTAM for all deliverables; 5) Limited warranty and liability caps. The agreement includes standard clauses for termination, force majeure, and dispute resolution through arbitration.",
     "createdAt": "2025-04-30T10:15:00Z",
     "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
     "usage": {
@@ -32,17 +32,17 @@
     "analysisType": "entities",
     "result": {
       "people": [
-        {"name": "Jane Smith", "role": "CEO, ACME Corporation", "mentions": 3},
+        {"name": "Jane Smith", "role": "CEO, THOUTAM Corporation", "mentions": 3},
         {"name": "Michael Johnson", "role": "CTO, GlobalTech Solutions", "mentions": 2},
-        {"name": "Robert Wilson", "role": "Legal Counsel, ACME Corporation", "mentions": 1}
+        {"name": "Robert Wilson", "role": "Legal Counsel, THOUTAM Corporation", "mentions": 1}
       ],
       "organizations": [
-        {"name": "ACME Corporation", "type": "Client", "mentions": 15},
+        {"name": "THOUTAM Corporation", "type": "Client", "mentions": 15},
         {"name": "GlobalTech Solutions", "type": "Service Provider", "mentions": 12}
       ],
       "locations": [
         {"name": "Delaware", "context": "Jurisdiction", "mentions": 2},
-        {"name": "San Francisco, CA", "context": "ACME HQ", "mentions": 1}
+        {"name": "San Francisco, CA", "context": "THOUTAM HQ", "mentions": 1}
       ],
       "dates": [
         {"date": "2025-05-01", "context": "Effective Date", "mentions": 2},

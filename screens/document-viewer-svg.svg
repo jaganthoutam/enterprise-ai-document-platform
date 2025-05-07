@@ -8,7 +8,7 @@
   
   <!-- Logo -->
   <rect x="20" y="20" width="200" height="60" rx="4" fill="#ffffff" opacity="0.9"/>
-  <text x="50" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">ACME DOCS</text>
+  <text x="50" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">THOUTAM DOCS</text>
   
   <!-- Sidebar Menu -->
   <g transform="translate(20, 120)">
@@ -45,7 +45,7 @@
   <!-- Main Content Area -->
   <!-- Header -->
   <rect x="240" y="0" width="960" height="70" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
-  <text x="270" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#212529">ACME Corp Services Agreement</text>
+  <text x="270" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#212529">THOUTAM Corp Services Agreement</text>
   
   <!-- Document Actions -->
   <rect x="800" y="15" width="40" height="40" rx="4" fill="#F8F9FA" stroke="#e9ecef" stroke-width="1"/>
@@ -77,7 +77,7 @@
   
   <!-- Document Content Mock -->
   <text x="300" y="200" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#212529">MASTER SERVICES AGREEMENT</text>
-  <text x="300" y="240" font-family="Arial, sans-serif" font-size="14" fill="#495057">This Master Services Agreement (the "Agreement") is made and entered into as of May 1, 2025 (the "Effective Date"), by and between ACME Corporation, a Delaware corporation ("Client"), and GlobalTech Solutions, a California corporation ("Service Provider").</text>
+  <text x="300" y="240" font-family="Arial, sans-serif" font-size="14" fill="#495057">This Master Services Agreement (the "Agreement") is made and entered into as of May 1, 2025 (the "Effective Date"), by and between THOUTAM Corporation, a Delaware corporation ("Client"), and GlobalTech Solutions, a California corporation ("Service Provider").</text>
   
   <text x="300" y="290" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#212529">1. SERVICES</text>
   <text x="300" y="320" font-family="Arial, sans-serif" font-size="14" fill="#495057">1.1 Service Provider shall provide to Client the services ("Services") described in one or more statements of work to be issued by Client and accepted by Service Provider (each, a "Statement of Work" or "SOW").</text>
@@ -108,7 +108,7 @@
   <rect x="870" y="240" width="300" height="540" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1" rx="4"/>
   
   <text x="890" y="270" font-family="Arial, sans-serif" font-size="14" fill="#212529" font-weight="bold">Summary</text>
-  <text x="890" y="300" font-family="Arial, sans-serif" font-size="14" fill="#495057">This Master Services Agreement between ACME Corporation and GlobalTech Solutions outlines the terms for software development services. Key provisions include:</text>
+  <text x="890" y="300" font-family="Arial, sans-serif" font-size="14" fill="#495057">This Master Services Agreement between THOUTAM Corporation and GlobalTech Solutions outlines the terms for software development services. Key provisions include:</text>
   
   <g transform="translate(890, 330)">
     <rect x="0" y="0" width="8" height="8" rx="4" fill="#0052CC"/>
@@ -121,7 +121,7 @@
     <text x="20" y="68" font-family="Arial, sans-serif" font-size="14" fill="#495057">Confidentiality obligations for both parties</text>
     
     <rect x="0" y="90" width="8" height="8" rx="4" fill="#0052CC"/>
-    <text x="20" y="98" font-family="Arial, sans-serif" font-size="14" fill="#495057">Intellectual property rights assignment to ACME for all deliverables</text>
+    <text x="20" y="98" font-family="Arial, sans-serif" font-size="14" fill="#495057">Intellectual property rights assignment to THOUTAM for all deliverables</text>
     
     <rect x="0" y="120" width="8" height="8" rx="4" fill="#0052CC"/>
     <text x="20" y="128" font-family="Arial, sans-serif" font-size="14" fill="#495057">Limited warranty and liability caps</text>
@@ -140,5 +140,5 @@
   <rect x="870" y="680" width="300" height="80" fill="#f8f9fa" stroke="#e9ecef" stroke-width="1" rx="4"/>
   <text x="890" y="705" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">Document Properties</text>
   <text x="890" y="730" font-family="Arial, sans-serif" font-size="12" fill="#495057">Created by: Admin User on April 15, 2025</text>
-  <text x="890" y="750" font-family="Arial, sans-serif" font-size="12" fill="#495057">Tags: legal, agreement, services, acme</text>
+  <text x="890" y="750" font-family="Arial, sans-serif" font-size="12" fill="#495057">Tags: legal, agreement, services, THOUTAM</text>
 </svg>

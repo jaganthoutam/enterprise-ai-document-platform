@@ -7,7 +7,7 @@
     "id": "msg_001",
     "conversationId": "conv_001",
     "userId": "usr_02",
-    "message": "Can you help me find information about our services agreement with ACME Corp?",
+    "message": "Can you help me find information about our services agreement with THOUTAM Corp?",
     "role": "user",
     "timestamp": "2025-05-01T09:15:00Z",
     "ttl": 1746057600
@@ -20,14 +20,14 @@
     "id": "msg_002",
     "conversationId": "conv_001",
     "userId": "usr_02",
-    "message": "I found a document titled 'ACME Corp Services Agreement' in your organization's repository. It's a master services agreement for software development services between ACME Corporation and GlobalTech Solutions. The agreement is effective from May 1, 2025 to May 1, 2026. Would you like me to provide a summary of the key terms or are you looking for specific information within this agreement?",
+    "message": "I found a document titled 'THOUTAM Corp Services Agreement' in your organization's repository. It's a master services agreement for software development services between THOUTAM Corporation and GlobalTech Solutions. The agreement is effective from May 1, 2025 to May 1, 2026. Would you like me to provide a summary of the key terms or are you looking for specific information within this agreement?",
     "role": "assistant",
     "timestamp": "2025-05-01T09:15:10Z",
     "ttl": 1746057600,
     "sources": [
       {
         "documentId": "doc_001",
-        "title": "ACME Corp Services Agreement",
+        "title": "THOUTAM Corp Services Agreement",
         "relevanceScore": 0.95
       }
     ]
@@ -53,14 +53,14 @@
     "id": "msg_004",
     "conversationId": "conv_001",
     "userId": "usr_02",
-    "message": "Here's a summary of the key terms in the ACME Corp Services Agreement:\n\n1. Term: Initial term of one year (May 1, 2025 to May 1, 2026) with automatic renewal unless terminated with 60 days' notice.\n\n2. Services: GlobalTech will provide custom software development services as specified in individual Statements of Work (SOWs).\n\n3. Payment: Net-30 payment terms with detailed invoicing requirements. Rates are fixed during the initial term.\n\n4. Intellectual Property: All deliverables and work products are assigned to ACME Corporation upon payment.\n\n5. Confidentiality: Both parties agree to protect confidential information for a period of 3 years after termination.\n\n6. Warranties: GlobalTech provides a 90-day warranty for all deliverables, ensuring they conform to specifications.\n\n7. Limitation of Liability: Liability is capped at fees paid during the preceding 12 months. Neither party is liable for indirect damages.\n\n8. Termination: Either party may terminate for material breach with 30 days' notice to cure. ACME may terminate any SOW with 15 days' notice.\n\n9. Dispute Resolution: Disputes will be resolved through binding arbitration in Delaware.\n\nThe agreement was signed by Jane Smith (CEO, ACME) and Michael Johnson (CTO, GlobalTech).",
+    "message": "Here's a summary of the key terms in the THOUTAM Corp Services Agreement:\n\n1. Term: Initial term of one year (May 1, 2025 to May 1, 2026) with automatic renewal unless terminated with 60 days' notice.\n\n2. Services: GlobalTech will provide custom software development services as specified in individual Statements of Work (SOWs).\n\n3. Payment: Net-30 payment terms with detailed invoicing requirements. Rates are fixed during the initial term.\n\n4. Intellectual Property: All deliverables and work products are assigned to THOUTAM Corporation upon payment.\n\n5. Confidentiality: Both parties agree to protect confidential information for a period of 3 years after termination.\n\n6. Warranties: GlobalTech provides a 90-day warranty for all deliverables, ensuring they conform to specifications.\n\n7. Limitation of Liability: Liability is capped at fees paid during the preceding 12 months. Neither party is liable for indirect damages.\n\n8. Termination: Either party may terminate for material breach with 30 days' notice to cure. THOUTAM may terminate any SOW with 15 days' notice.\n\n9. Dispute Resolution: Disputes will be resolved through binding arbitration in Delaware.\n\nThe agreement was signed by Jane Smith (CEO, THOUTAM) and Michael Johnson (CTO, GlobalTech).",
     "role": "assistant",
     "timestamp": "2025-05-01T09:16:15Z",
     "ttl": 1746057600,
     "sources": [
       {
         "documentId": "doc_001",
-        "title": "ACME Corp Services Agreement",
+        "title": "THOUTAM Corp Services Agreement",
         "relevanceScore": 0.95
       },
       {
@@ -91,14 +91,14 @@
     "id": "msg_006",
     "conversationId": "conv_001",
     "userId": "usr_02",
-    "message": "Based on the ACME Corp Services Agreement, you have the following options for early termination:\n\n1. Termination for Material Breach: If GlobalTech materially breaches the agreement, ACME can provide written notice specifying the breach. GlobalTech then has 30 days to cure the breach. If not cured within this period, ACME can terminate the agreement.\n\n2. Termination for Convenience: ACME has the right to terminate any Statement of Work (SOW) with 15 days' written notice, even without cause. However, ACME would be responsible for paying for all services rendered up to the termination date and any non-cancellable commitments made by GlobalTech.\n\n3. Termination for Insolvency: The agreement can be terminated immediately if GlobalTech becomes insolvent, files for bankruptcy, or undergoes similar proceedings.\n\n4. Mutual Agreement: Both parties can agree to terminate the contract early under mutually acceptable terms.\n\nIf you're considering early termination, I recommend reviewing Section 12 (Termination) of the agreement for the complete details and consulting with your legal department to ensure proper procedures are followed.",
+    "message": "Based on the THOUTAM Corp Services Agreement, you have the following options for early termination:\n\n1. Termination for Material Breach: If GlobalTech materially breaches the agreement, THOUTAM can provide written notice specifying the breach. GlobalTech then has 30 days to cure the breach. If not cured within this period, THOUTAM can terminate the agreement.\n\n2. Termination for Convenience: THOUTAM has the right to terminate any Statement of Work (SOW) with 15 days' written notice, even without cause. However, THOUTAM would be responsible for paying for all services rendered up to the termination date and any non-cancellable commitments made by GlobalTech.\n\n3. Termination for Insolvency: The agreement can be terminated immediately if GlobalTech becomes insolvent, files for bankruptcy, or undergoes similar proceedings.\n\n4. Mutual Agreement: Both parties can agree to terminate the contract early under mutually acceptable terms.\n\nIf you're considering early termination, I recommend reviewing Section 12 (Termination) of the agreement for the complete details and consulting with your legal department to ensure proper procedures are followed.",
     "role": "assistant",
     "timestamp": "2025-05-01T09:18:00Z",
     "ttl": 1746057600,
     "sources": [
       {
         "documentId": "doc_001",
-        "title": "ACME Corp Services Agreement",
+        "title": "THOUTAM Corp Services Agreement",
         "relevanceScore": 0.98
       }
     ]

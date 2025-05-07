@@ -10,7 +10,7 @@
   
   <!-- App Header -->
   <rect x="10" y="40" width="370" height="60" fill="#0052CC"/>
-  <text x="30" y="77" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">ACME Docs</text>
+  <text x="30" y="77" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">THOUTAM Docs</text>
   
   <!-- Action Icons -->
   <circle cx="330" cy="70" r="15" fill="#FFFFFF" opacity="0.2"/>

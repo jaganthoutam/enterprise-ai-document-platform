@@ -8,7 +8,7 @@
   
   <!-- Logo -->
   <rect x="20" y="20" width="200" height="60" rx="4" fill="#ffffff" opacity="0.9"/>
-  <text x="50" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">ACME DOCS</text>
+  <text x="50" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0052CC">THOUTAM DOCS</text>
   
   <!-- Sidebar Menu -->
   <g transform="translate(20, 120)">
@@ -91,17 +91,17 @@
     <!-- User Message 1 -->
     <rect x="0" y="0" width="500" height="80" rx="8" fill="#f1f3f5"/>
     <text x="20" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#212529">You</text>
-    <text x="20" y="55" font-family="Arial, sans-serif" font-size="14" fill="#495057">Can you help me find information about our services agreement with ACME Corp?</text>
+    <text x="20" y="55" font-family="Arial, sans-serif" font-size="14" fill="#495057">Can you help me find information about our services agreement with THOUTAM Corp?</text>
     
     <!-- AI Response 1 -->
     <rect x="0" y="100" width="650" height="150" rx="8" fill="#EBF5FF"/>
     <text x="20" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0052CC">AI Assistant</text>
-    <text x="20" y="155" font-family="Arial, sans-serif" font-size="14" fill="#495057">I found a document titled 'ACME Corp Services Agreement' in your organization's repository. It's a master services agreement for software development services between ACME Corporation and GlobalTech Solutions. The agreement is effective from May 1, 2025 to May 1, 2026.</text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="14" fill="#495057">I found a document titled 'THOUTAM Corp Services Agreement' in your organization's repository. It's a master services agreement for software development services between THOUTAM Corporation and GlobalTech Solutions. The agreement is effective from May 1, 2025 to May 1, 2026.</text>
     <text x="20" y="185" font-family="Arial, sans-serif" font-size="14" fill="#495057">Would you like me to provide a summary of the key terms or are you looking for specific information within this agreement?</text>
     
     <!-- Sources Reference -->
     <rect x="20" y="210" width="200" height="30" rx="15" fill="#0052CC" opacity="0.1"/>
-    <text x="40" y="230" font-family="Arial, sans-serif" font-size="12" fill="#0052CC">Source: ACME Corp Services Agreement</text>
+    <text x="40" y="230" font-family="Arial, sans-serif" font-size="12" fill="#0052CC">Source: THOUTAM Corp Services Agreement</text>
     
     <!-- User Message 2 -->
     <rect x="0" y="270" width="300" height="50" rx="8" fill="#f1f3f5"/>
@@ -111,18 +111,18 @@
     <!-- AI Response 2 -->
     <rect x="0" y="340" width="650" height="230" rx="8" fill="#EBF5FF"/>
     <text x="20" y="370" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0052CC">AI Assistant</text>
-    <text x="20" y="395" font-family="Arial, sans-serif" font-size="14" fill="#495057">Here's a summary of the key terms in the ACME Corp Services Agreement:</text>
+    <text x="20" y="395" font-family="Arial, sans-serif" font-size="14" fill="#495057">Here's a summary of the key terms in the THOUTAM Corp Services Agreement:</text>
     
     <!-- Bullet Points -->
     <text x="40" y="425" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Term: Initial term of one year (May 1, 2025 to May 1, 2026) with automatic renewal unless terminated with 60 days' notice.</text>
     <text x="40" y="455" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Payment: Net-30 payment terms with detailed invoicing requirements. Rates are fixed during the initial term.</text>
-    <text x="40" y="485" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Intellectual Property: All deliverables and work products are assigned to ACME Corporation upon payment.</text>
-    <text x="40" y="515" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Termination: Either party may terminate for material breach with 30 days' notice to cure. ACME may terminate any SOW with 15 days' notice.</text>
-    <text x="20" y="545" font-family="Arial, sans-serif" font-size="14" fill="#495057">The agreement was signed by Jane Smith (CEO, ACME) and Michael Johnson (CTO, GlobalTech).</text>
+    <text x="40" y="485" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Intellectual Property: All deliverables and work products are assigned to THOUTAM Corporation upon payment.</text>
+    <text x="40" y="515" font-family="Arial, sans-serif" font-size="14" fill="#495057">• Termination: Either party may terminate for material breach with 30 days' notice to cure. THOUTAM may terminate any SOW with 15 days' notice.</text>
+    <text x="20" y="545" font-family="Arial, sans-serif" font-size="14" fill="#495057">The agreement was signed by Jane Smith (CEO, THOUTAM) and Michael Johnson (CTO, GlobalTech).</text>
     
     <!-- Sources Reference -->
     <rect x="20" y="560" width="200" height="30" rx="15" fill="#0052CC" opacity="0.1"/>
-    <text x="40" y="580" font-family="Arial, sans-serif" font-size="12" fill="#0052CC">Source: ACME Corp Services Agreement</text>
+    <text x="40" y="580" font-family="Arial, sans-serif" font-size="12" fill="#0052CC">Source: THOUTAM Corp Services Agreement</text>
   </g>
   
   <!-- Message Input -->
