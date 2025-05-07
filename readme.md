@@ -222,7 +222,7 @@ The admin interface provides system-wide management:
 
 ### 6. System Architecture Diagram
 
-![System Architecture Diagram](screens/aws-serverless-architecture.svg)
+![System Architecture Diagram](screens/architecture.png)
 
 This diagram illustrates the complete serverless architecture including all the layers described above, their interactions, and data flows.
 

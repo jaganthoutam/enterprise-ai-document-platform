@@ -1,6 +1,6 @@
 # Comprehensive Deployment Guide for Bedrock AI Document Analysis Application
 
-This guide is based on the project's React frontend, AWS serverless architecture (including API Gateway, Lambda, DynamoDB, and S3), as identified in files like package.json, template.yaml, and backend scripts.
+This guide is based on the project's React frontend, AWS serverless architecture (including API Gateway, Lambda, DynamoDB, and S3), as identified in files like package.json, template.yaml, and Lambda scripts.
 
 # Table of Contents
 - [Architecture Overview](#architecture-overview)
@@ -13,8 +13,8 @@ This guide is based on the project's React frontend, AWS serverless architecture
 
 ## Architecture Overview
 - **Frontend**: React app with Material-UI for UI components, handling authentication, dashboards, and document analysis.
-- **Backend**: AWS Lambda functions for document processing, API Gateway for endpoints, DynamoDB for data storage, and S3 for file handling.
-- **Key Files**: package.json (dependencies), template.yaml (AWS resources), and backend Lambda scripts.
+- **Services**: AWS Lambda functions for document processing, API Gateway for endpoints, DynamoDB for data storage, and S3 for file handling.
+- **Key Files**: package.json (dependencies), template.yaml (AWS resources), and Lambda scripts.
 
 ---
 
@@ -66,13 +66,12 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 5. Deploy Backend (Lambdas, DynamoDB, S3, API Gateway)
+## 5. Deploy Services (Lambdas, DynamoDB, S3, API Gateway)
 
-You can use AWS SAM, CDK, or the AWS Console to deploy the backend.
+You can use AWS SAM, CDK, or the AWS Console to deploy the services.
 
 ### Example with AWS SAM:
 ```sh
-cd backend
 sam build
 sam deploy --guided
 ```
@@ -99,12 +98,11 @@ yarn test
 ```
 / (root)
   /src
-    /api         # API client files for backend endpoints
+    /api         # API client files for service endpoints
     /pages       # React pages (AI Assistant, Users, Tenants, etc.)
     /components  # Shared UI components (StatusChip, ConfirmDialog, etc.)
     /tests       # (Recommended) Automated tests
   /public        # Static assets
-  /backend/      # Lambda functions, infra templates
   package.json   # Project dependencies and scripts
   .env           # Environment variables
   installation.md # This installation guide
@@ -165,7 +163,7 @@ The app will be hosted on a URL like `your-app-name.amplifyapp.com` and adapt to
 ### Using AWS Amplify for Full Deployment:
 1. Install Amplify CLI: `npm install -g @aws-amplify/cli`.
 2. Initialize: `amplify init` and follow prompts.
-3. Add backend: `amplify add api` and `amplify add function` for Lambda.
+3. Add services: `amplify add api` and `amplify add function` for Lambda.
 4. Push changes: `amplify push`.
 
 ### Post-Deployment Verification
@@ -181,8 +179,8 @@ The app will be hosted on a URL like `your-app-name.amplifyapp.com` and adapt to
 - Ensure AWS CLI is configured: Run `aws configure` to set up your credentials.
 - Install necessary tools: `npm install -g @aws-amplify/cli aws-cdk` for Amplify and CDK support.
 
-### Step 2: Backend Deployment with AWS SAM
-- Build your SAM template: `sam build` in the backend directory.
+### Step 2: Services Deployment with AWS SAM
+- Build your SAM template: `sam build` in the src/lambda directory.
 - Deploy: `sam deploy --guided` and input parameters like stack name and region.
 - Verify resources: Check AWS Console for API Gateway endpoints, Lambda functions, and DynamoDB tables.
 
@@ -221,7 +219,7 @@ The app will be hosted on a URL like `your-app-name.amplifyapp.com` and adapt to
 
 ## Resource References
 - AWS Documentation: Refer to AWS Amplify and SAM guides for detailed API references.
-- Project Files: Cross-reference with template.yaml for resource definitions and backend/documentAnalysis.js for Lambda specifics.
+- Project Files: Cross-reference with template.yaml for resource definitions and src/lambda/documentAnalysis.js for Lambda specifics.
 
 ### Final Verification
 - Run smoke tests: Access the app and perform basic operations like login and document upload.
@@ -230,4 +228,4 @@ The app will be hosted on a URL like `your-app-name.amplifyapp.com` and adapt to
 **For any questions or issues, please refer to the project README or contact the maintainers.**
 
 ## Summary
-This guide covers the full deployment process for your Bedrock AI application, from prerequisites to verification, based on React frontend and AWS backend components. Refer to this for any future deployments.
+This guide covers the full deployment process for your Bedrock AI application, from prerequisites to verification, based on React frontend and AWS services components. Refer to this for any future deployments.

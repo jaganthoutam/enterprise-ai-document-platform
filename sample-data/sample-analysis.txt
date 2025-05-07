@@ -166,7 +166,7 @@
       "technologies": [
         {"name": "React.js", "context": "Frontend", "mentions": 11},
         {"name": "React Native", "context": "Mobile", "mentions": 9},
-        {"name": "Node.js", "context": "Backend", "mentions": 17},
+        {"name": "Node.js", "context": "Services", "mentions": 17},
         {"name": "Python", "context": "Data Processing", "mentions": 13},
         {"name": "TypeScript", "context": "Code Quality", "mentions": 8}
       ],

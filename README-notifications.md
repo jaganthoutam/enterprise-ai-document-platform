@@ -4,17 +4,17 @@ This document provides an overview of the notification system implemented in the
 
 ## Overview
 
-The notification system allows the application to send notifications to users about various events, such as document analysis completion, system maintenance, role changes, and tenant creation. Notifications are stored in a DynamoDB table and can be accessed through the Notifications page in the UI.
+The notification system allows the application to send notifications to users about various events. Notifications are stored in a DynamoDB table and can be accessed through the Notifications page in the UI.
 
 ## Components
 
 ### Frontend
 
-- **NotificationBadge**: A component that displays the number of unread notifications in the navigation bar.
-- **Notifications Page**: A page that displays all notifications for the current user, with options to mark notifications as read or delete them.
-- **Notification Service**: A service that provides functions for creating notifications from other parts of the application.
+- **NotificationBadge**: A component that displays the number of unread notifications.
+- **Notifications Page**: A page that displays all notifications.
+- **Notification Service**: A service that provides functions for creating notifications.
 
-### Backend
+### Services
 
 - **Notifications API**: A Lambda function that provides endpoints for managing notifications.
 - **Notification Handlers**: Lambda functions that process notifications from SNS topics.
