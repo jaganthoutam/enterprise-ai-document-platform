@@ -1017,13 +1017,16 @@ Resources:
         EBSEnabled: true
         VolumeSize: 10
         VolumeType: gp2
+      DomainEndpointOptions:
+        EnforceHTTPS: true
+        TLSSecurityPolicy: Policy-Min-TLS-1-2-2019-07
       AccessPolicies:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               AWS: '*'
-            Action: es:*
+            Action: es:*s
             Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${AWS::StackName}-opensearch/*
       EncryptionAtRestOptions:
         Enabled: true
@@ -1186,8 +1189,7 @@ Resources:
     Properties:
       EnableDefaultStandards: true
       Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-security-hub
+        Name: !Sub ${AWS::StackName}-security-hub
 
   # KMS Key for encryption
   KmsKey:
