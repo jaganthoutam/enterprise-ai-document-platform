@@ -6,6 +6,12 @@ A serverless multi-tier application leveraging AWS Bedrock for AI-powered docume
 
 The application is built using a multi-layered architecture:
 
+## System Architecture Diagram
+
+![System Architecture Diagram](screens/architecture.png)
+
+This diagram illustrates the complete serverless architecture including all the layers described above, their interactions, and data flows.
+
 ### Client Layer
 - **Web Application** - Built with React.js
 - **Third-Party Systems** - API integration capabilities
@@ -65,19 +71,6 @@ This repository includes comprehensive visualizations of the application interfa
 The web dashboard presents a branded interface for THOUTAM Corporation featuring:
 
 - **Brand Identity**: Utilizes THOUTAM's primary color (#0052CC) throughout the interface
-- **Key Metrics Panel**: 
-  - Document count: 1,247
-  - AI analysis usage: 78%
-  - Storage: 3.2 TB / 5 TB
-  - Active users: 167
-
-- **Recent Documents**:
-  | Name | Type | Modified | Owner |
-  |------|------|----------|-------|
-  | THOUTAM Services Agreement | Contract | May 5, 2025 | John Smith |
-  | Q1 Financial Report | Report | May 3, 2025 | Sarah Johnson |
-  | Marketing Presentation | Video | May 1, 2025 | Michael Chen |
-  | Product Specification | Document | Apr 29, 2025 | Lisa Wong |
 
 - **Pending Approvals**:
   - 3 contracts awaiting legal review
@@ -158,49 +151,12 @@ The AI assistant provides contextual document support:
   - Highlighted relevant sections
   - Direct links to document viewers
 
-### 4. Mobile Application Interface
 
-![Mobile Application Interface](screens/mobile-app-svg.svg)
-
-The mobile experience optimizes for on-the-go access:
-
-- **Document Browser**:
-  - Thumbnail previews
-  - Recent documents section
-  - Offline available documents
-  - Shared with me collection
-
-- **Mobile Document Viewer**:
-  - Responsive text display
-  - Simplified navigation
-  - Touch-optimized controls
-  - Highlight and annotation tools
-
-- **Mobile Analytics View**:
-  - Simplified data visualizations
-  - Key performance indicators
-  - Trend highlights
-  - Action recommendations
-
-- **Notification Center**:
-  - Document approval requests
-  - Mention notifications
-  - AI insight alerts
-  - System updates
-
-### 5. Admin Dashboard (Multi-Tenant View)
+### 4. Admin Dashboard (Multi-Tenant View)
 
 ![Admin Dashboard Multi-Tenant View](screens/admin-dashboard-svg.svg)
 
 The admin interface provides system-wide management:
-
-- **Tenant Overview**:
-  | Tenant | Users | Storage | AI Usage | Status |
-  |--------|-------|---------|----------|--------|
-  | THOUTAM Corp | 167 | 3.2/5 TB | 78% | Active |
-  | Global Industries | 243 | 4.1/6 TB | 92% | Active |
-  | Apex Solutions | 89 | 1.8/3 TB | 45% | Active |
-  | Summit Enterprises | 112 | 2.3/4 TB | 63% | Maintenance |
 
 - **System Health Metrics**:
   - API response time: 87ms avg
@@ -219,12 +175,6 @@ The admin interface provides system-wide management:
   - Quota management
   - Authentication settings
   - Compliance reporting
-
-### 6. System Architecture Diagram
-
-![System Architecture Diagram](screens/architecture.png)
-
-This diagram illustrates the complete serverless architecture including all the layers described above, their interactions, and data flows.
 
 ## Implementation Considerations
 
