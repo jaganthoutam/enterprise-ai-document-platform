@@ -8,7 +8,6 @@ The application is built using a multi-layered architecture:
 
 ### Client Layer
 - **Web Application** - Built with React.js
-- **Mobile Application** - Built with React Native
 - **Third-Party Systems** - API integration capabilities
 
 ### API Layer
