@@ -1398,33 +1398,27 @@ Resources:
           DOCUMENTS_TABLE: !Ref DocumentsTable
           DOCUMENT_ANALYSIS_NOTIFICATION_TOPIC_ARN: !Ref DocumentAnalysisNotificationTopic
       Events:
-        GetDocuments:
+        GetDocumentsForAnalysis:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents
+            Path: /documents/analysis
             Method: get
-        UploadDocument:
+        UploadDocumentForAnalysis:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents/upload
+            Path: /documents/analysis/upload
             Method: post
         AnalyzeDocument:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents/analyze
+            Path: /documents/analysis/analyze
             Method: post
-        DeleteDocument:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ApiGateway
-            Path: /documents/{documentId}
-            Method: delete
         GetDocumentAnalysis:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGateway
-            Path: /documents/{documentId}/analysis
+            Path: /documents/analysis/{documentId}
             Method: get
