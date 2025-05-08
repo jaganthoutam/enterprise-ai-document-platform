@@ -1416,12 +1416,6 @@ Resources:
             RestApiId: !Ref ApiGateway
             Path: /documents/analyze
             Method: post
-        GetDocument:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ApiGateway
-            Path: /documents/{documentId}
-            Method: get
         DeleteDocument:
           Type: Api
           Properties:
