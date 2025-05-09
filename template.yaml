@@ -1039,7 +1039,12 @@ Resources:
           - Effect: Allow
             Principal:
               AWS: '*'
-            Action: es:*s
+            Action: es:*
+            Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${AWS::StackName}-opensearch/*
+          - Effect: Allow
+            Principal:
+              Service: bedrock.amazonaws.com
+            Action: es:*
             Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${AWS::StackName}-opensearch/*
       EncryptionAtRestOptions:
         Enabled: true
@@ -1530,12 +1535,12 @@ Resources:
       StorageConfiguration:
         Type: OPENSEARCH_MANAGED_CLUSTER
         OpensearchManagedClusterConfiguration:
-          DomainArn: !GetAtt OpenSearchDomain.DomainArn
           DomainEndpoint: !GetAtt OpenSearchDomain.DomainEndpoint
+          DomainArn: !GetAtt OpenSearchDomain.DomainArn
           FieldMapping:
-            VectorField: vector
-            TextField: text
-            MetadataField: metadata
+            VectorField: vector_field
+            TextField: text_field
+            MetadataField: metadata_field
           VectorIndexName: !Sub ${AWS::StackName}-vector-index
 
   BedrockAgent:
