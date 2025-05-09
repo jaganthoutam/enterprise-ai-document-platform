@@ -1476,6 +1476,25 @@ Resources:
                 Action:
                   - bedrock:*
                 Resource: '*'
+        - PolicyName: OpenSearchServerlessAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - aoss:CreateCollection
+                  - aoss:DeleteCollection
+                  - aoss:UpdateCollection
+                  - aoss:DescribeCollection
+                  - aoss:ListCollections
+                  - aoss:BatchGetCollection
+                  - aoss:CreateIndex
+                  - aoss:DeleteIndex
+                  - aoss:UpdateIndex
+                  - aoss:DescribeIndex
+                  - aoss:ListIndices
+                  - aoss:BatchGetIndex
+                Resource: '*'
 
   BedrockAgentRole:
     Type: AWS::IAM::Role
