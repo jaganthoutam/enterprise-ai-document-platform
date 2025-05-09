@@ -1535,7 +1535,7 @@ Resources:
       StorageConfiguration:
         Type: OPENSEARCH_MANAGED_CLUSTER
         OpensearchManagedClusterConfiguration:
-          DomainEndpoint: !GetAtt OpenSearchDomain.DomainEndpoint
+          DomainEndpoint: !Sub https://${OpenSearchDomain.DomainEndpoint}
           DomainArn: !GetAtt OpenSearchDomain.DomainArn
           FieldMapping:
             VectorField: vector_field
