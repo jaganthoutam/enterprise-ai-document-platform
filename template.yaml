@@ -1508,6 +1508,15 @@ Resources:
         Type: VECTOR
         VectorKnowledgeBaseConfiguration:
           EmbeddingModelArn: !Sub arn:aws:bedrock:${AWS::Region}::foundation-model/amazon.titan-embed-text-v1
+      StorageConfiguration:
+        Type: OPENSEARCH_SERVERLESS
+        OpensearchServerlessConfiguration:
+          CollectionArn: !Sub arn:aws:aoss:${AWS::Region}:${AWS::AccountId}:collection/${AWS::StackName}-knowledge-base
+          FieldMapping:
+            VectorField: vector
+            TextField: text
+            MetadataField: metadata
+          VectorIndexName: !Sub ${AWS::StackName}-vector-index
 
   BedrockAgent:
     Type: AWS::Bedrock::Agent
