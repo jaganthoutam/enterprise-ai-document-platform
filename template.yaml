@@ -1500,6 +1500,18 @@ Resources:
                   - aoss:ListIndices
                   - aoss:BatchGetIndex
                 Resource: '*'
+        - PolicyName: OpenSearchAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - es:ESHttp*
+                  - es:DescribeElasticsearchDomain
+                  - es:ListDomainNames
+                  - es:ListTags
+                  - es:DescribeElasticsearchDomains
+                Resource: '*'
 
   BedrockAgentRole:
     Type: AWS::IAM::Role
