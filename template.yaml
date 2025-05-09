@@ -1436,28 +1436,47 @@ Resources:
             Path: /documents/analysis/{documentId}
             Method: get
 
-  # Bedrock Model Configurations
-  BedrockModelConfig:
-    Type: AWS::Bedrock::ModelConfiguration
+  # Bedrock IAM Roles
+  BedrockModelRole:
+    Type: AWS::IAM::Role
     Properties:
-      ModelId: anthropic.claude-3-sonnet-20240229-v1:0
-      ModelName: !Sub ${AWS::StackName}-claude-3-sonnet
-      Description: Claude 3 Sonnet model for document analysis and chat
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-claude-3-sonnet
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: bedrock.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSBedrockFullAccess
 
-  BedrockEmbeddingModelConfig:
-    Type: AWS::Bedrock::ModelConfiguration
+  BedrockKnowledgeBaseRole:
+    Type: AWS::IAM::Role
     Properties:
-      ModelId: amazon.titan-embed-text-v1
-      ModelName: !Sub ${AWS::StackName}-titan-embed
-      Description: Titan Embedding model for document embeddings
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-titan-embed
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: bedrock.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSBedrockFullAccess
 
-  # Bedrock Knowledge Base
+  BedrockAgentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: bedrock.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSBedrockFullAccess
+
+  # Bedrock Resources
   BedrockKnowledgeBase:
     Type: AWS::Bedrock::KnowledgeBase
     Properties:
@@ -1467,177 +1486,21 @@ Resources:
       KnowledgeBaseConfiguration:
         Type: VECTOR
         VectorKnowledgeBaseConfiguration:
-          EmbeddingModelArn: !GetAtt BedrockEmbeddingModelConfig.ModelArn
-      StorageConfiguration:
-        Type: OPENSEARCH_SERVERLESS
-        OpensearchServerlessConfiguration:
-          CollectionId: !Ref OpenSearchDomain
-          VectorIndexName: document-vectors
-          FieldMapping:
-            TextField: text
-            VectorField: vector
-            MetadataField: metadata
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-knowledge-base
+          EmbeddingModelArn: !Sub arn:aws:bedrock:${AWS::Region}::foundation-model/amazon.titan-embed-text-v1
 
-  # IAM Role for Bedrock Knowledge Base
-  BedrockKnowledgeBaseRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${AWS::StackName}-bedrock-kb-role
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: bedrock.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: BedrockKnowledgeBasePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - bedrock:InvokeModel
-                Resource: 
-                  - !GetAtt BedrockEmbeddingModelConfig.ModelArn
-              - Effect: Allow
-                Action:
-                  - es:ESHttp*
-                Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${AWS::StackName}-opensearch/*
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:ListBucket
-                Resource:
-                  - !Sub arn:aws:s3:::${DocumentsBucket}
-                  - !Sub arn:aws:s3:::${DocumentsBucket}/*
-
-  # Bedrock Agent
   BedrockAgent:
     Type: AWS::Bedrock::Agent
     Properties:
-      Name: !Sub ${AWS::StackName}-document-agent
-      Description: Agent for document analysis and processing
-      RoleArn: !GetAtt BedrockAgentRole.Arn
-      FoundationModel: !GetAtt BedrockModelConfig.ModelArn
-      AgentResourceRoleArn: !GetAtt BedrockAgentResourceRole.Arn
-      Instruction: |
-        You are a document analysis assistant. Your role is to:
-        1. Analyze documents for key information
-        2. Extract entities and relationships
-        3. Generate summaries
-        4. Answer questions about document content
-        5. Provide insights and recommendations
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-document-agent
-
-  # IAM Role for Bedrock Agent
-  BedrockAgentRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${AWS::StackName}-bedrock-agent-role
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: bedrock.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: BedrockAgentPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - bedrock:InvokeModel
-                Resource: 
-                  - !GetAtt BedrockModelConfig.ModelArn
-
-  # IAM Role for Bedrock Agent Resources
-  BedrockAgentResourceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${AWS::StackName}-bedrock-agent-resource-role
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: bedrock.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: BedrockAgentResourcePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:ListBucket
-                Resource:
-                  - !Sub arn:aws:s3:::${DocumentsBucket}
-                  - !Sub arn:aws:s3:::${DocumentsBucket}/*
-              - Effect: Allow
-                Action:
-                  - dynamodb:GetItem
-                  - dynamodb:Query
-                  - dynamodb:Scan
-                Resource:
-                  - !GetAtt DocumentsTable.Arn
-                  - !GetAtt AnalysisTable.Arn
-
-  # Bedrock Guardrail
-  BedrockGuardrail:
-    Type: AWS::Bedrock::Guardrail
-    Properties:
-      Name: !Sub ${AWS::StackName}-document-guardrail
-      Description: Guardrail for document analysis
-      RoleArn: !GetAtt BedrockGuardrailRole.Arn
-      ContentPolicy:
-        FiltersConfig:
-          - Type: PII
-            InputStrength: HIGH
-            OutputStrength: HIGH
-          - Type: HATE_SPEECH
-            InputStrength: HIGH
-            OutputStrength: HIGH
-          - Type: SEXUAL_CONTENT
-            InputStrength: HIGH
-            OutputStrength: HIGH
-          - Type: VIOLENCE
-            InputStrength: HIGH
-            OutputStrength: HIGH
-      Tags:
-        - Key: Name
-          Value: !Sub ${AWS::StackName}-document-guardrail
-
-  # IAM Role for Bedrock Guardrail
-  BedrockGuardrailRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${AWS::StackName}-bedrock-guardrail-role
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: bedrock.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: BedrockGuardrailPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - bedrock:InvokeModel
-                Resource: 
-                  - !GetAtt BedrockModelConfig.ModelArn
+      AgentName: !Sub ${AWS::StackName}-document-agent
+      Description: "Agent for document analysis and chat"
+      Instruction: "You are an AI assistant that helps users analyze and understand their documents."
+      AgentResourceRoleArn: !GetAtt BedrockAgentRole.Arn
+      FoundationModel: "anthropic.claude-v2"  # Required parameter - foundation model
+      IdleSessionTTLInSeconds: 900  # Required parameter - session timeout
+      KnowledgeBases:
+        - KnowledgeBaseId: !Ref BedrockKnowledgeBase
+          Description: "Document analysis knowledge base"
+          KnowledgeBaseState: "ENABLED"
 
 Outputs:
   ApiGatewayEndpoint:
