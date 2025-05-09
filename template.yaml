@@ -1447,8 +1447,15 @@ Resources:
             Principal:
               Service: bedrock.amazonaws.com
             Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSBedrockFullAccess
+      Policies:
+        - PolicyName: BedrockFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:*
+                Resource: '*'
 
   BedrockKnowledgeBaseRole:
     Type: AWS::IAM::Role
@@ -1460,8 +1467,15 @@ Resources:
             Principal:
               Service: bedrock.amazonaws.com
             Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSBedrockFullAccess
+      Policies:
+        - PolicyName: BedrockFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:*
+                Resource: '*'
 
   BedrockAgentRole:
     Type: AWS::IAM::Role
@@ -1473,8 +1487,15 @@ Resources:
             Principal:
               Service: bedrock.amazonaws.com
             Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSBedrockFullAccess
+      Policies:
+        - PolicyName: BedrockFullAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:*
+                Resource: '*'
 
   # Bedrock Resources
   BedrockKnowledgeBase:
